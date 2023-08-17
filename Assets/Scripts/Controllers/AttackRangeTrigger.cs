@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,14 +7,14 @@ namespace Controllers
 {
     public class AttackRangeTrigger : MonoBehaviour
     {
-        [SerializeField] private WeaponController weaponController;
+        [SerializeField] private List<BaseWeaponController> weaponControllers;
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private float detectionRadius = 10f;
 
         private Collider[] _cachedColliders;
-        private const int BatchSize = 50; //Increasing this would improve performance(?) but can cause less accurate target selection
-        private const float UpdateInterval = 0.5f; // Increasing this would increase gameplay responsiveness but in cost of performance
-        private float _lastUpdate = -Mathf.Infinity; // Initialize to a negative value to trigger the first update immediately
+        private const int BatchSize = 50;
+        private const float UpdateInterval = 0.5f;
+        private float _lastUpdate = -Mathf.Infinity;
 
         private void Start()
         {
@@ -24,23 +25,40 @@ namespace Controllers
         {
             if (!(Time.time - _lastUpdate >= UpdateInterval)) return;
             _lastUpdate = Time.time;
-            StartCoroutine(UpdateWeaponTargetBatched());
+            StartCoroutine(UpdateWeaponTargets());
         }
 
-        private IEnumerator UpdateWeaponTargetBatched()
+        private IEnumerator UpdateWeaponTargets()
         {
-            var numColliders = Physics.OverlapSphereNonAlloc(transform.position, detectionRadius, _cachedColliders, enemyLayer);
+            var numColliders =
+                Physics.OverlapSphereNonAlloc(transform.position, detectionRadius, _cachedColliders, enemyLayer);
 
-            for (var i = 0; i < numColliders; i += BatchSize)
+            foreach (BaseWeaponController weaponController in weaponControllers)
             {
-                var batchEnd = Mathf.Min(i + BatchSize, numColliders);
-                var collidersBatch = new Collider[batchEnd - i];
-                System.Array.Copy(_cachedColliders, i, collidersBatch, 0, batchEnd - i);
-                
-                EnemyController closestEnemy = GetClosestEnemy(collidersBatch);
-                weaponController.SetTargetEnemy(closestEnemy != null ? closestEnemy.transform : null);
+                EnemyController closestEnemy = null;
+                var closestDistance = Mathf.Infinity;
 
-                yield return null;
+                for (var i = 0; i < numColliders; i += BatchSize)
+                {
+                    var batchEnd = Mathf.Min(i + BatchSize, numColliders);
+                    var collidersBatch = new Collider[batchEnd - i];
+                    Array.Copy(_cachedColliders, i, collidersBatch, 0, batchEnd - i);
+
+                    var enemy = GetClosestEnemy(collidersBatch);
+                    if (enemy != null)
+                    {
+                        var distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+                        if (distanceToEnemy < closestDistance)
+                        {
+                            closestDistance = distanceToEnemy;
+                            closestEnemy = enemy;
+                        }
+                    }
+
+                    yield return null;
+                }
+
+                weaponController.SetTargetEnemy(closestEnemy != null ? closestEnemy.transform : null);
             }
         }
 

@@ -48,10 +48,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData: {fileID: 11400000, guid: 49a39791e184fbd439186c40039b3948, type: 2}
-  gemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
+  xpGemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
     type: 3}
   goldPrefab: {fileID: 3903889357748954759, guid: a78c67939d687964c98b846f6a0281eb,
     type: 3}
+  minSpawnOffsetX: -1
+  maxSpawnOffsetX: 1
+  minZOffset: -1
+  maxZOffset: 1
+  maxDamageScalingTime: 30
+  maxDamageScaleValue: 5
 --- !u!195 &8420396754243579611
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -99,6 +105,7 @@ GameObject:
   - component: {fileID: 8624454247818509422}
   - component: {fileID: 2296691049090404003}
   - component: {fileID: 353789314830478504}
+  - component: {fileID: 2133112147991752437}
   m_Layer: 6
   m_Name: EnemyMesh
   m_TagString: Enemy
@@ -201,3 +208,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!136 &2133112147991752437
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8372761874577022576}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.5
+  m_Height: 2
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}

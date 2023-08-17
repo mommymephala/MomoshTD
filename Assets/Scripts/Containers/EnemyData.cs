@@ -9,9 +9,12 @@ namespace Containers
         public GameObject enemyPrefab;
         public int health;
         public int damage;
-        public int xpGemDropAmount = 10;
-        public int goldDropAmount;
-        public int moveSpeed;
+        public int xpGemMinDropAmount;
+        public int xpGemMaxDropAmount;
+        public int goldMinDropAmount;
+        public int goldMaxDropAmount;
+        public float goldDropChance;
+        public float moveSpeed;
         public float damageInterval;
         public float damageRadius;
     }

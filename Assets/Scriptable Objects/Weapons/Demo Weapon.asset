@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c70baaf1b54e1d4c90918d3fc35e60e, type: 3}
   m_Name: Demo Weapon
   m_EditorClassIdentifier: 
-  damage: 5
-  projectileSpeed: 0
-  cooldown: 0.1
-  effectDuration: 0
+  damage: 10
+  projectileSpeed: 1
+  cooldown: 0.25
+  effectDuration: 1
   effectArea: 100

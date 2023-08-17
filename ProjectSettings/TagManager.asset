@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Enemy
-  - Gem
   - Gold
+  - XpGem
   layers:
   - Default
   - TransparentFX
@@ -17,7 +17,7 @@ TagManager:
   - Enemy
   - Player
   - Obstacle
-  - Item
+  - Coin
   - 
   - 
   - 

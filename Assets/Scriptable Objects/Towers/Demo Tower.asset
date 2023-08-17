@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5895c53905ac414199fae5a4d2d2b34, type: 3}
   m_Name: Demo Tower
   m_EditorClassIdentifier: 
-  maxDmgModifier: 0
-  maxAreaModifier: 0
-  maxProjectileSpeedModifier: 0
-  maxDurationModifier: 0
-  maxCooldownModifier: 0
-  maxLuckModifier: 0
-  maxHp: 100
-  maxHpRecovery: 0
+  baseDmgModifier: 1
+  baseAreaModifier: 1
+  baseProjectileSpeedModifier: 1
+  baseDurationModifier: 1
+  baseCooldownModifier: 1
+  baseLuckModifier: 1
+  maxHp: 9999999
+  baseHpRegen: 0.25
