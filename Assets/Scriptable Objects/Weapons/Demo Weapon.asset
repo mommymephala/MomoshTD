@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c70baaf1b54e1d4c90918d3fc35e60e, type: 3}
   m_Name: Demo Weapon
   m_EditorClassIdentifier: 
-  damage: 10
-  projectileSpeed: 1
+  projectilePrefab: {fileID: 6816919501976119307, guid: 4bbbbfa9e9b8dcf41ae2c8efbffc34ea,
+    type: 3}
+  damage: 15
+  projectileSpeed: 6
   cooldown: 0.25
-  effectDuration: 1
-  effectArea: 100
+  effectDuration: 0
+  effectRadius: 0
+  maxDistance: 200

@@ -14,7 +14,6 @@ namespace Controllers
         [SerializeField] private float spawnRadius;
         [SerializeField] private float minDistanceFromTower;
         [SerializeField] private LayerMask obstacleLayer;
-
         private Transform _spawnPoint;
         private float _nextSpawnTime;
         

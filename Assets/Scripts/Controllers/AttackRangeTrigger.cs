@@ -7,7 +7,7 @@ namespace Controllers
 {
     public class AttackRangeTrigger : MonoBehaviour
     {
-        [SerializeField] private List<BaseWeaponController> weaponControllers;
+        [SerializeField] private List<TurretController> weaponControllers;
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private float detectionRadius = 10f;
 
@@ -33,7 +33,7 @@ namespace Controllers
             var numColliders =
                 Physics.OverlapSphereNonAlloc(transform.position, detectionRadius, _cachedColliders, enemyLayer);
 
-            foreach (BaseWeaponController weaponController in weaponControllers)
+            foreach (TurretController weaponController in weaponControllers)
             {
                 EnemyController closestEnemy = null;
                 var closestDistance = Mathf.Infinity;
@@ -44,7 +44,7 @@ namespace Controllers
                     var collidersBatch = new Collider[batchEnd - i];
                     Array.Copy(_cachedColliders, i, collidersBatch, 0, batchEnd - i);
 
-                    var enemy = GetClosestEnemy(collidersBatch);
+                    EnemyController enemy = GetClosestEnemy(collidersBatch);
                     if (enemy != null)
                     {
                         var distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);

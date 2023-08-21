@@ -90,10 +90,8 @@ namespace Controllers
                     Debug.Log("GOLD: " + _playerGold);
                 }
             }
-            
             Destroy(coin);
         }
-
 
         private void AddXp(int xpAmount)
         {

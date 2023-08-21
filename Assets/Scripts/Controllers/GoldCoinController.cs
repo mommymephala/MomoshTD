@@ -4,11 +4,11 @@ namespace Controllers
 {
     public class GoldCoinController : MonoBehaviour
     {
-        private readonly int _goldAmount = 1;
-        
+        private const int GoldAmount = 1;
+
         public int GetGoldAmount()
         {
-            return _goldAmount;
+            return GoldAmount;
         }
     }
 }

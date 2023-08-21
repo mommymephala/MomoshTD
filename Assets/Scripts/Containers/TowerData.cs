@@ -8,6 +8,7 @@ namespace Containers
         //those will be used for passive upgrades and base calculations
         public float baseDmgModifier;
         public float baseAreaModifier;
+        public float baseRangeModifier;
         public float baseProjectileSpeedModifier;
         public float baseDurationModifier;
         public float baseCooldownModifier;

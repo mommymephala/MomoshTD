@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseDmgModifier: 1
   baseAreaModifier: 1
+  baseRangeModifier: 5
   baseProjectileSpeedModifier: 1
   baseDurationModifier: 1
   baseCooldownModifier: 1

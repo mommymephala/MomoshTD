@@ -33,7 +33,6 @@ namespace Controllers
         public void TakeDamage(int damage)
         {
             _currentHealth -= damage;
-
             if (_currentHealth <= 0)
             {
                 Die();
@@ -65,14 +64,12 @@ namespace Controllers
             return isColliding;
         }
         
-        #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Vector3 checkPosition = transform.position;
             Gizmos.color = Color.red;
             Gizmos.DrawWireSphere(checkPosition, enemyData.damageRadius);
         }
-        #endif
 
         private void Die()
         {
