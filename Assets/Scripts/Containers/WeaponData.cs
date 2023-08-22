@@ -7,11 +7,11 @@ namespace Containers
     {
         //those will be used for base calculations
         public GameObject projectilePrefab;
-        public int damage;
-        public float projectileSpeed;
-        public float cooldown;
-        public float effectDuration;
-        public float effectRadius;
-        public float maxDistance;
+        public int baseDamage;
+        public float baseProjectileSpeed;
+        public float baseCooldown;
+        public float baseEffectDuration;
+        public float baseEffectRadius;
+        public float baseMaxDistance;
     }
 }

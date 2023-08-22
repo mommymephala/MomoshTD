@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Controllers.Enemy_Controllers;
 using UnityEngine;
+using Controllers.Enemy_Controllers;
+using Controllers.Weapon_Controllers;
 
 namespace Controllers.Player_Controllers
 {
     public class AttackRangeTrigger : MonoBehaviour
     {
-        [SerializeField] private List<TurretController> weaponControllers;
+        [SerializeField] private List<BaseWeaponController> weaponControllers;
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private float detectionRadius = 10f;
         
@@ -35,7 +36,7 @@ namespace Controllers.Player_Controllers
             var numColliders =
                 Physics.OverlapSphereNonAlloc(transform.position, detectionRadius, _cachedColliders, enemyLayer);
 
-            foreach (TurretController weaponController in weaponControllers)
+            foreach (BaseWeaponController weaponController in weaponControllers)
             {
                 EnemyController closestEnemy = null;
                 var closestDistance = Mathf.Infinity;
@@ -49,11 +50,15 @@ namespace Controllers.Player_Controllers
                     EnemyController enemy = GetClosestEnemy(collidersBatch);
                     if (enemy != null)
                     {
-                        var distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
-                        if (distanceToEnemy < closestDistance)
+                        // Check if the enemy's transform is still valid before accessing its position
+                        if (enemy.transform != null)
                         {
-                            closestDistance = distanceToEnemy;
-                            closestEnemy = enemy;
+                            var distanceToEnemy = Vector3.Distance(transform.position, enemy.transform.position);
+                            if (distanceToEnemy < closestDistance)
+                            {
+                                closestDistance = distanceToEnemy;
+                                closestEnemy = enemy;
+                            }
                         }
                     }
 

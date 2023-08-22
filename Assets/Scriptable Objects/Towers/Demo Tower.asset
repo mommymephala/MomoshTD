@@ -19,5 +19,5 @@ MonoBehaviour:
   baseDurationModifier: 1
   baseCooldownModifier: 1
   baseLuckModifier: 1
-  maxHp: 9999999
+  maxHp: 1000
   baseHpRegen: 0.25

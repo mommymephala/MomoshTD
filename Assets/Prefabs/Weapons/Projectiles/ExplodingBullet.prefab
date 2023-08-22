@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6579437432481288185}
   - component: {fileID: 5515181269543971586}
   - component: {fileID: 8519710310454998135}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ExplodingBullet
   m_TagString: Player
   m_Icon: {fileID: 0}

@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 2075529667179130034, guid: aa66c13ce9f67e9458bd164a14cf2b8b,
     type: 3}
-  health: 20
-  damage: 5
+  baseHealth: 50
+  baseDamage: 10
   xpGemMinDropAmount: 1
   xpGemMaxDropAmount: 3
   goldMinDropAmount: 1

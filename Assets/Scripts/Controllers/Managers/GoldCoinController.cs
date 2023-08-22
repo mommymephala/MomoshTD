@@ -6,7 +6,7 @@ namespace Controllers.Managers
     {
         private const int GoldAmount = 1;
 
-        public static int GetGoldAmount()
+        public int GetGoldAmount()
         {
             return GoldAmount;
         }

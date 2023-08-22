@@ -1,19 +1,21 @@
+using UnityEngine;
 using Containers;
 using Controllers.Player_Controllers;
-using UnityEngine;
 
 namespace Controllers.Enemy_Controllers
 {
     public class EnemyController : MonoBehaviour
     {
-        [SerializeField] public EnemyData enemyData;
+        public EnemyData enemyData;
+        //[SerializeField] private WaveConfiguration waveConfiguration;
         [SerializeField] private float maxDamageScalingTime;
         [SerializeField] private float maxDamageScaleValue; // Represents the duration in seconds over which you want the scaling to occur.
+        
         private int _currentHealth;
         private float _nextDamageTime;
         private PlayerController _playerController;
         
-        //coin variables
+        [Header("Coin Values")]
         [SerializeField] private GameObject xpGemPrefab;
         [SerializeField] private GameObject goldPrefab;
         [SerializeField] private float minSpawnOffsetX;
@@ -23,7 +25,7 @@ namespace Controllers.Enemy_Controllers
 
         private void Awake()
         {
-            _currentHealth = enemyData.health;
+            _currentHealth = enemyData.baseHealth;
             _nextDamageTime = Time.time + enemyData.damageInterval;
             _playerController = FindObjectOfType<PlayerController>();
         }
@@ -48,13 +50,12 @@ namespace Controllers.Enemy_Controllers
 
             // Calculate damage scaling factor based on elapsed time
             var damageScalingFactor = Mathf.Lerp(1.0f, maxDamageScaleValue, Mathf.Clamp01(Time.time / maxDamageScalingTime));
-            var scaledDamage = Mathf.RoundToInt(enemyData.damage * damageScalingFactor);
+            var scaledDamage = Mathf.RoundToInt(enemyData.baseDamage * damageScalingFactor);
 
             _nextDamageTime = Time.time + enemyData.damageInterval;
-            if (IsCollidingWithTower())
-            {
-                _playerController.TowerTakeDamage(scaledDamage);
-            }
+            if (!IsCollidingWithTower()) return;
+            _playerController.TowerTakeDamage(scaledDamage);
+            Debug.Log("Damage given:" + scaledDamage);
         }
 
         private bool IsCollidingWithTower()

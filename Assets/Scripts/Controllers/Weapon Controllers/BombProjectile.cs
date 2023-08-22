@@ -2,35 +2,30 @@ using Containers;
 using Controllers.Enemy_Controllers;
 using UnityEngine;
 
-namespace Controllers.Player_Controllers
+namespace Controllers.Weapon_Controllers
 {
-    public class ExplodingBullet : MonoBehaviour
+    public class BombProjectile : MonoBehaviour
     {
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private LayerMask enemyLayer;
-        private GameObject _owner; // The turret that fired the bullet, set when instantiated
-    
-        public void Initialize(GameObject owner)
-        {
-            _owner = owner;
-        }
     
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject == _owner || other.CompareTag("Player")) return;
+            if (other.CompareTag("Player")) return;
+            
             Explode();
             Destroy(gameObject);
         }
 
         private void Explode()
         {
-            var colliders = Physics.OverlapSphere(transform.position, weaponData.effectRadius, enemyLayer);
+            var colliders = Physics.OverlapSphere(transform.position, weaponData.baseEffectRadius, enemyLayer);
             foreach (Collider collider in colliders)
             {
                 var enemyController = collider.GetComponent<EnemyController>();
                 if (enemyController != null)
                 {
-                    enemyController.TakeDamage(weaponData.damage);
+                    enemyController.TakeDamage(weaponData.baseDamage);
                 }
             }
         }

@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 6816919501976119307, guid: 4bbbbfa9e9b8dcf41ae2c8efbffc34ea,
     type: 3}
-  damage: 15
-  projectileSpeed: 6
-  cooldown: 0.25
-  effectDuration: 0
-  effectRadius: 0
-  maxDistance: 200
+  baseDamage: 10
+  baseProjectileSpeed: 10
+  baseCooldown: 0.25
+  baseEffectDuration: 1
+  baseEffectRadius: 0.4
+  baseMaxDistance: 250

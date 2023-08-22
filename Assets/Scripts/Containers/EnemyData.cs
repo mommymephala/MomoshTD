@@ -5,10 +5,10 @@ namespace Containers
     [CreateAssetMenu(fileName = "Enemy", menuName = "New Enemy")]    
     public class EnemyData : ScriptableObject
     {
-        //those will be used for passive upgrades and base calculations
+        //those will be used for base calculations
         public GameObject enemyPrefab;
-        public int health;
-        public int damage;
+        public int baseHealth;
+        public int baseDamage;
         public int xpGemMinDropAmount;
         public int xpGemMaxDropAmount;
         public int goldMinDropAmount;
