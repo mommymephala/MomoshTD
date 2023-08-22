@@ -1,22 +1,24 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Controllers.Enemy_Controllers;
 using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Player_Controllers
 {
     public class AttackRangeTrigger : MonoBehaviour
     {
         [SerializeField] private List<TurretController> weaponControllers;
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private float detectionRadius = 10f;
-
+        
+        //collider batching
         private Collider[] _cachedColliders;
         private const int BatchSize = 50;
         private const float UpdateInterval = 0.5f;
         private float _lastUpdate = -Mathf.Infinity;
 
-        private void Start()
+        private void Awake()
         {
             _cachedColliders = new Collider[10];
         }

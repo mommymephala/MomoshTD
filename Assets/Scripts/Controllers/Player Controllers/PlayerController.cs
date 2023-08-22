@@ -1,21 +1,22 @@
-using UnityEngine;
 using Containers;
+using Controllers.Managers;
+using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Player_Controllers
 {
     public class PlayerController : MonoBehaviour
     {
         [SerializeField] private TowerData towerData;
         [SerializeField] private LayerMask coinLayer;
         [SerializeField] private float collectionRadius;
-        private int _currentHealth;
-        private int _playerXp;
+        private float _currentHealth;
+        private float _playerXp;
         private int _playerGold;
         private Camera _camera;
         private float _nextHpRegenTime;
         private float _bonusHpRegen;
 
-        private void Start()
+        private void Awake()
         {
             _camera = Camera.main;
             _currentHealth = towerData.maxHp;
@@ -85,7 +86,7 @@ namespace Controllers
                 var goldCoin = coin.GetComponent<GoldCoinController>();
                 if (goldCoin != null)
                 {
-                    var goldAmount = goldCoin.GetGoldAmount();
+                    var goldAmount = GoldCoinController.GetGoldAmount();
                     AddGold(goldAmount);
                     Debug.Log("GOLD: " + _playerGold);
                 }
@@ -93,7 +94,7 @@ namespace Controllers
             Destroy(coin);
         }
 
-        private void AddXp(int xpAmount)
+        private void AddXp(float xpAmount)
         {
             _playerXp += xpAmount;
         }

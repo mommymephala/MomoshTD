@@ -1,27 +1,30 @@
-using UnityEngine;
 using Containers;
+using Controllers.Player_Controllers;
+using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Enemy_Controllers
 {
     public class EnemyController : MonoBehaviour
     {
         [SerializeField] public EnemyData enemyData;
+        [SerializeField] private float maxDamageScalingTime;
+        [SerializeField] private float maxDamageScaleValue; // Represents the duration in seconds over which you want the scaling to occur.
+        private int _currentHealth;
+        private float _nextDamageTime;
+        private PlayerController _playerController;
+        
+        //coin variables
         [SerializeField] private GameObject xpGemPrefab;
         [SerializeField] private GameObject goldPrefab;
         [SerializeField] private float minSpawnOffsetX;
         [SerializeField] private float maxSpawnOffsetX;
         [SerializeField] private float minZOffset;
         [SerializeField] private float maxZOffset;
-        [SerializeField] private float maxDamageScalingTime;
-        [SerializeField] private float maxDamageScaleValue; // Represents the duration in seconds over which you want the scaling to occur.
-        private PlayerController _playerController;
-        private int _currentHealth;
-        private float _nextDamageTime;
 
-        private void Start()
+        private void Awake()
         {
             _currentHealth = enemyData.health;
-            _nextDamageTime = Time.time + enemyData.damageInterval; 
+            _nextDamageTime = Time.time + enemyData.damageInterval;
             _playerController = FindObjectOfType<PlayerController>();
         }
 
@@ -73,20 +76,20 @@ namespace Controllers
 
         private void Die()
         {
-            // Spawn gems and gold at the enemy's position
             SpawnCoins(transform.position);
-            // Destroy the enemy GameObject
             Destroy(gameObject);
         }
 
         private void SpawnCoins(Vector3 spawnPosition)
         {
+            // Instantiate xp coins based on randomized amount and drop chance
             var randomXpGemAmount = Random.Range(enemyData.xpGemMinDropAmount, enemyData.xpGemMaxDropAmount + 1);
             for (var i = 0; i < randomXpGemAmount; i++)
             {
                 Vector3 xpGemSpawnPosition = spawnPosition + new Vector3(Random.Range(minSpawnOffsetX, maxSpawnOffsetX),0.0f, Random.Range(minZOffset, maxZOffset));
                 Instantiate(xpGemPrefab, xpGemSpawnPosition, Quaternion.identity);
             }
+            
             // Instantiate gold coins based on randomized amount and drop chance
             if (!(Random.value <= enemyData.goldDropChance)) return;
             {

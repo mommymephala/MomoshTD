@@ -1,7 +1,9 @@
+using Controllers.Player_Controllers;
 using UnityEngine;
+
 // ReSharper disable Unity.PreferNonAllocApi
 
-namespace Controllers
+namespace Controllers.Enemy_Controllers
 {
     public class EnemySpawnManager : MonoBehaviour
     {
@@ -17,7 +19,7 @@ namespace Controllers
         private Transform _spawnPoint;
         private float _nextSpawnTime;
         
-        private void Start()
+        private void Awake()
         {
             _spawnPoint = transform;
             _nextSpawnTime = Time.time + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
@@ -69,7 +71,6 @@ namespace Controllers
                 Instantiate(enemyPrefab, randomSpawnPosition, Quaternion.identity);
         }
         
-        #if UNITY_EDITOR
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
@@ -79,8 +80,5 @@ namespace Controllers
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(towerPosition, minDistanceFromTower);
         }
-        #endif
-
-
     }
 }

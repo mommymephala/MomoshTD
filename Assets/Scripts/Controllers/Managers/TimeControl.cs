@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Managers
 {
     public class TimeControl : MonoBehaviour
     {

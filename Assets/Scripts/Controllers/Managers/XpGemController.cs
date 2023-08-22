@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Managers
 {
     public class XpGemController : MonoBehaviour
     {
@@ -14,17 +14,17 @@ namespace Controllers
             CalculateXpMultiplier();
         }
 
-        public int GetXpAmount()
+        public float GetXpAmount()
         {
             var xpMultiplier = CalculateXpMultiplier();
-            var xpAmount = Mathf.RoundToInt(UnityEngine.Random.Range(minXpAmount, maxXpAmount + 1) * xpMultiplier);
-            return xpAmount;   
+            var xpAmount = Random.Range(minXpAmount, maxXpAmount + 1) * xpMultiplier;
+            return xpAmount;
         }
 
-        private int CalculateXpMultiplier()
+        private float CalculateXpMultiplier()
         {
             var xpMultiplier = Mathf.Lerp(1.0f, maxXpMultiplier, Mathf.Clamp01(Time.time / maxXpMultiplierTime));
-            return (int)xpMultiplier;
+            return xpMultiplier;
         }
     }
 }

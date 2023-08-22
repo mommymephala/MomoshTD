@@ -1,7 +1,7 @@
-using UnityEngine;
 using Containers;
+using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Player_Controllers
 {
     public class TurretController : MonoBehaviour
     {

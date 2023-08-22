@@ -1,8 +1,9 @@
 using Containers;
+using Controllers.Player_Controllers;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Controllers
+namespace Controllers.Enemy_Controllers
 {
     public class EnemyAI : MonoBehaviour
     {
