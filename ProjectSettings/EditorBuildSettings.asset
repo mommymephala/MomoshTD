@@ -4,7 +4,16 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: fbca28f75952d0c48b7a861d68cd90f6
+  - enabled: 1
+    path: Assets/Scenes/TowerSelection.unity
+    guid: 87bec171e42dbf3478a946bb2b47f318
+  - enabled: 1
+    path: Assets/Scenes/SampleScene.unity
+    guid: c850ee8c3b14cc8459e7e186857cf567
   m_configObjects:
     com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: 2c9e67598260eaa44aab7d8a887a8dac,
       type: 2}

@@ -17,6 +17,5 @@ MonoBehaviour:
   baseDamage: 10
   baseProjectileSpeed: 10
   baseCooldown: 0.25
-  baseEffectDuration: 1
-  baseEffectRadius: 0.4
-  baseMaxDistance: 250
+  baseAoeDuration: 0
+  baseAoeRadius: 0

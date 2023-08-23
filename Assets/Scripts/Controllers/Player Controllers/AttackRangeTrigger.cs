@@ -11,7 +11,7 @@ namespace Controllers.Player_Controllers
     {
         [SerializeField] private List<BaseWeaponController> weaponControllers;
         [SerializeField] private LayerMask enemyLayer;
-        [SerializeField] private float detectionRadius = 10f;
+        [SerializeField] private float detectionRadius;
         
         //collider batching
         private Collider[] _cachedColliders;
@@ -64,7 +64,6 @@ namespace Controllers.Player_Controllers
 
                     yield return null;
                 }
-
                 weaponController.SetTargetEnemy(closestEnemy != null ? closestEnemy.transform : null);
             }
         }

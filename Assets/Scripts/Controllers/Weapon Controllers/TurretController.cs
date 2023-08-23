@@ -15,7 +15,7 @@ namespace Controllers.Weapon_Controllers
             RotateTurretTowardsEnemy();
             
             if (weaponData == null) return;
-            if (!(_attackTimer >= weaponData.baseCooldown * towerData.baseCooldownModifier)) return;
+            if (!(_attackTimer >= weaponData.baseCooldown + (weaponData.baseCooldown * towerData.baseCooldownModifier))) return;
             FireBullet((TargetEnemy.position - MuzzleLocation).normalized);
             _attackTimer = 0f;
         }
@@ -26,7 +26,7 @@ namespace Controllers.Weapon_Controllers
             var bulletRigidbody = projectile.GetComponent<Rigidbody>();
             if (bulletRigidbody != null)
             {
-                bulletRigidbody.velocity = bulletDirection * weaponData.baseProjectileSpeed;
+                bulletRigidbody.velocity = bulletDirection * (weaponData.baseProjectileSpeed + (weaponData.baseProjectileSpeed * towerData.baseProjectileSpeedModifier));
             }
         }
     }

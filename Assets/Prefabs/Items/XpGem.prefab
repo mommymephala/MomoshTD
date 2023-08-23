@@ -113,4 +113,4 @@ MonoBehaviour:
   maxXpMultiplierTime: 30
   minXpAmount: 1
   maxXpAmount: 3
-  maxXpMultiplier: 5
+  maxXpMultiplier: 1

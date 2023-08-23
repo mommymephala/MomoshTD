@@ -50,6 +50,8 @@ MonoBehaviour:
   coinLayer:
     serializedVersion: 2
     m_Bits: 512
+  baseXpRequirement: 20
+  xpMultiplierForNextLv: 1.2
   collectionRadius: 5
 --- !u!1 &4877975804626635384
 GameObject:

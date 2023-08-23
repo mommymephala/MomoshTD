@@ -1,4 +1,3 @@
-using Containers;
 using Controllers.Player_Controllers;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,7 +8,6 @@ namespace Controllers.Enemy_Controllers
     {
         private Transform _tower;
         private NavMeshAgent _agent;
-        private EnemyData _enemyData; // Reference to the enemy data scriptable object
 
         private void Awake()
         {

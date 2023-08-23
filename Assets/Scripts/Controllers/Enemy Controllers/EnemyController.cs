@@ -6,11 +6,12 @@ namespace Controllers.Enemy_Controllers
 {
     public class EnemyController : MonoBehaviour
     {
-        public EnemyData enemyData;
-        //[SerializeField] private WaveConfiguration waveConfiguration;
+        [Header("Scaling Calculations")]
         [SerializeField] private float maxDamageScalingTime;
-        [SerializeField] private float maxDamageScaleValue; // Represents the duration in seconds over which you want the scaling to occur.
+        [SerializeField] private float maxDamageScaleValue;
         
+        //references
+        public EnemyData enemyData;
         private int _currentHealth;
         private float _nextDamageTime;
         private PlayerController _playerController;
@@ -55,7 +56,6 @@ namespace Controllers.Enemy_Controllers
             _nextDamageTime = Time.time + enemyData.damageInterval;
             if (!IsCollidingWithTower()) return;
             _playerController.TowerTakeDamage(scaledDamage);
-            Debug.Log("Damage given:" + scaledDamage);
         }
 
         private bool IsCollidingWithTower()

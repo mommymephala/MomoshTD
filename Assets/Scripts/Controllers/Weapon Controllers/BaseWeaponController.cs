@@ -1,4 +1,3 @@
-using System;
 using Containers;
 using UnityEngine;
 
@@ -6,15 +5,15 @@ namespace Controllers.Weapon_Controllers
 {
     public class BaseWeaponController : MonoBehaviour
     {
-        [SerializeField] protected WeaponData weaponData;
+        [SerializeField] public WeaponData weaponData;
         [SerializeField] protected TowerData towerData;
 
         [SerializeField] protected Transform towerTransform;
         [SerializeField] protected Transform muzzleTransform;
         [SerializeField] protected float rotationSpeed;
 
-        protected Vector3 TurretPosition;
-        protected Vector3 TargetPosition;
+        private Vector3 _turretPosition;
+        private Vector3 _targetPosition;
         protected Vector3 MuzzleLocation;
         protected Transform TargetEnemy;
 
@@ -24,11 +23,11 @@ namespace Controllers.Weapon_Controllers
         
         protected void RotateTurretTowardsEnemy()
         {
-            TurretPosition = towerTransform.position;
-            TargetPosition = TargetEnemy.position;
+            _turretPosition = towerTransform.position;
+            _targetPosition = TargetEnemy.position;
             MuzzleLocation = muzzleTransform.position;
 
-            Quaternion targetRotation = Quaternion.LookRotation(TargetPosition - TurretPosition);
+            Quaternion targetRotation = Quaternion.LookRotation(_targetPosition - _turretPosition);
             towerTransform.rotation = Quaternion.Slerp(towerTransform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
         

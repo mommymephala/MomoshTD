@@ -5,15 +5,15 @@ namespace Containers
     [CreateAssetMenu(fileName = "Tower", menuName = "New Tower")]
     public class TowerData : ScriptableObject
     {
-        //those will be used for passive upgrades and base calculations
+        //those will be used for passive upgrades and base calculations ALL OF THEM SHOULD BE CALCULATED AS %
         
         //weapon values
         public float baseDmgModifier;
-        public float baseAreaModifier;
-        public float baseRangeModifier;
+        public float baseAoeRadiusModifier;
         public float baseProjectileSpeedModifier;
-        public float baseDurationModifier;
+        public float baseAoeDurationModifier;
         public float baseCooldownModifier;
+        //public float baseRangeModifier;
         
         //player values
         public int maxHp;

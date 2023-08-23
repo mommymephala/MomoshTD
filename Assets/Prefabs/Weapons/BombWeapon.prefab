@@ -129,11 +129,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd301ee16728bb24eab212251f2f0ea1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explodingWeaponData: {fileID: 11400000, guid: 70df4aa72d0be824e9559d61e5db10b2,
-    type: 2}
+  weaponData: {fileID: 11400000, guid: 70df4aa72d0be824e9559d61e5db10b2, type: 2}
   towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
-  muzzleTransform: {fileID: 4966442388391403146}
   towerTransform: {fileID: 4966442387666248634}
+  muzzleTransform: {fileID: 4966442388391403146}
   rotationSpeed: 500
 --- !u!1 &4966442388391403147
 GameObject:

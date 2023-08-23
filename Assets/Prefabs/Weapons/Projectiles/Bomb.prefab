@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5515181269543971586}
   - component: {fileID: 8519710310454998135}
   m_Layer: 0
-  m_Name: ExplodingBullet
+  m_Name: Bomb
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,9 +112,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 70df4aa72d0be824e9559d61e5db10b2, type: 2}
+  towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
+  explosionDuration: 0.5
 --- !u!54 &8519710310454998135
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -215,7 +215,5 @@ MonoBehaviour:
   weaponData: {fileID: 11400000, guid: 3b4265b13eae11745ae034e66d836d18, type: 2}
   towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
   towerTransform: {fileID: 9115034253592890240}
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 64
+  muzzleTransform: {fileID: 9115034254363419041}
   rotationSpeed: 500

@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Containers;
 using Controllers.Managers;
+using Controllers.Weapon_Controllers;
+using Random = UnityEngine.Random;
 
 namespace Controllers.Player_Controllers
 {
@@ -10,6 +13,7 @@ namespace Controllers.Player_Controllers
         [Header("References")]
         [SerializeField] private TowerData towerData;
         [SerializeField] private LayerMask coinLayer;
+        [SerializeField] private List<BaseWeaponController> weaponControllers;
         
         [Header("XP Calculation")]
         [SerializeField] private float baseXpRequirement;
@@ -56,13 +60,13 @@ namespace Controllers.Player_Controllers
             {
                 CollectCoinsAtClick();
             }
-
+            
+            CheckForLevelUp();
+            
             // Check for HP regeneration
             if (!(_currentHealth < _maxCurrentHealth) || !(Time.time >= _nextHpRegenTime)) return;
             RegenerateHp();
             _nextHpRegenTime = Time.time + HpRegenInterval;
-            
-            CheckForLevelUp();
         }
         
         private void GenerateXpLevelThresholds()
@@ -79,24 +83,113 @@ namespace Controllers.Player_Controllers
         
         private bool CheckForLevelUp()
         {
-            var leveledUp = false; // Initialize the flag to indicate if a level-up occurred
+            // Check if the player has enough XP to level up
+            if (_currentLevel >= _xpLevelThresholds.Count || !(_playerXp >= _xpLevelThresholds[_currentLevel - 1]))
+                return false; // Return the flag indicating whether a level-up occurred
+            _currentLevel++;
+            Debug.Log("Level Up! Current Level: " + _currentLevel);
 
-            // Check for level-up
-            while (_currentLevel < _xpLevelThresholds.Count && _playerXp >= _xpLevelThresholds[_currentLevel - 1])
-            {
-                _currentLevel++;
-                Debug.Log("Level Up! Current Level: " + _currentLevel);
-                leveledUp = true; // Set the flag to true since a level-up occurred
-            }
-
-            return leveledUp; // Return the flag indicating whether a level-up occurred
+            return true; // Return the flag indicating whether a level-up occurred
         }
 
         private void OnLevelUp()
         {
-            if(CheckForLevelUp());
+            if (!CheckForLevelUp()) return;
+            PauseGame();
+            
+            var upgradeOptions = GenerateUpgradeOptions(towerData, weaponControllers);
+
+            // Randomly select two upgrade options
+            var optionIndex1 = Random.Range(0, upgradeOptions.Count);
+            var optionIndex2 = Random.Range(0, upgradeOptions.Count - 1);
+            if (optionIndex2 >= optionIndex1)
+                optionIndex2++;
+
+            UpgradeOption option1 = upgradeOptions[optionIndex1];
+            UpgradeOption option2 = upgradeOptions[optionIndex2];
+            
+            // TODO: Present the upgrade options to the player and let them choose
+            // TODO: Handle selection UI here
+
+            ResumeGame();
+        }
+
+        private static void PauseGame()
+        {
+            Time.timeScale = 0;
+        }
+        
+        private static void ResumeGame()
+        {
+            Time.timeScale = 1;
+        }
+
+        private void PresentUpgradeChoices()
+        {
+            var upgradeOptions = GenerateUpgradeOptions(towerData, weaponControllers);
+            UIManager.Instance.ShowUpgradePanel(upgradeOptions, OnUpgradeChoiceSelected);
+            // TODO: Actually do the UI
+        }
+        
+        private static List<UpgradeOption> GenerateUpgradeOptions(TowerData towerData, List<BaseWeaponController> weaponControllers)
+        {
+            var options = new List<UpgradeOption>();
+
+            foreach (BaseWeaponController weaponController in weaponControllers)
             {
-                //do level up logic
+                // Check if the weapon can increase damage
+                if (weaponController.weaponData.baseDamage * towerData.baseDmgModifier < weaponController.weaponData.baseDamage)
+                {
+                    options.Add(new UpgradeOption
+                    {
+                        type = UpgradeType.WeaponDamage,
+                        description = "Increase " + weaponController.weaponData.name + " Damage"
+                    });
+                }
+
+                // Check if the weapon can increase projectile speed
+                if (weaponController.weaponData.baseProjectileSpeed * towerData.baseProjectileSpeedModifier < weaponController.weaponData.baseProjectileSpeed)
+                {
+                    options.Add(new UpgradeOption
+                    {
+                        type = UpgradeType.ProjectileSpeed,
+                        description = "Increase " + weaponController.weaponData.name + " Projectile Speed"
+                    });
+                }
+        
+                // TODO: Add other upgrade options
+
+            }
+
+            return options;
+        }
+
+        private static void OnUpgradeChoiceSelected(UpgradeOption chosenUpgrade)
+        {
+            ApplyUpgrade(chosenUpgrade);
+            ResumeGame();
+        }
+
+        private static void ApplyUpgrade(UpgradeOption upgrade)
+        {
+            switch (upgrade.type)
+            {
+                case UpgradeType.WeaponDamage:
+                    break;
+                case UpgradeType.ProjectileSpeed:
+                    break;
+                case UpgradeType.AoeEffect:
+                    break;
+                case UpgradeType.TowerMaxHp:
+                    break;
+                case UpgradeType.HealthRegenSpeed:
+                    break;
+                case UpgradeType.AddNewWeapon:
+                    break;
+                // TODO: Handle other upgrade types as needed
+                // TODO: Think about a default statement
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -115,14 +208,11 @@ namespace Controllers.Player_Controllers
         
         private void CollectCoinsAtClick()
         {
-            // Get the mouse click position in the game world
             Vector3 clickPosition = GetMouseClickPosition();
 
-            // Collect items within the specified radius of the click position
             var colliders = Physics.OverlapSphere(clickPosition, collectionRadius, coinLayer);
             foreach (Collider coinCollider in colliders)
             {
-                // Handle collecting the item (gem or gold)
                 CollectCoin(coinCollider.gameObject);
             }
         }
@@ -175,7 +265,6 @@ namespace Controllers.Player_Controllers
 
         private void Die()
         {
-            // Add death-related logic here
             Destroy(gameObject);
         }
     }

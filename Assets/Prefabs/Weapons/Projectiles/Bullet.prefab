@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 3b4265b13eae11745ae034e66d836d18, type: 2}
+  towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
 --- !u!54 &8401335467813293450
 Rigidbody:
   m_ObjectHideFlags: 0
