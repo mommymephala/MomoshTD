@@ -96,7 +96,7 @@ GameObject:
   - component: {fileID: 4966442387666248633}
   m_Layer: 7
   m_Name: BombWeapon
-  m_TagString: Player
+  m_TagString: BombWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -134,6 +134,10 @@ MonoBehaviour:
   towerTransform: {fileID: 4966442387666248634}
   muzzleTransform: {fileID: 4966442388391403146}
   rotationSpeed: 500
+  currentCooldownModifier: 1
+  currentProjectileSpeedModifier: 1
+  damageModifier: 1
+  areaModifier: 1
 --- !u!1 &4966442388391403147
 GameObject:
   m_ObjectHideFlags: 0

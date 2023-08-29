@@ -14,9 +14,10 @@ namespace Containers
     {
         WeaponDamage,
         ProjectileSpeed,
+        WeaponCooldown,
         AoeEffect,
         TowerMaxHp,
-        HealthRegenSpeed,
+        HealthRegenAmount,
         AddNewWeapon,
         // TODO: Add other possible upgrade types
     }

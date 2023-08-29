@@ -1,6 +1,6 @@
+using UnityEngine;
 using Containers;
 using Controllers.Enemy_Controllers;
-using UnityEngine;
 
 namespace Controllers.Weapon_Controllers
 {
@@ -8,6 +8,13 @@ namespace Controllers.Weapon_Controllers
     {
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private TowerData towerData;
+        [SerializeField] private BaseWeaponController weaponController;
+        private float _currentDamage;
+        
+        private void Start()
+        {
+            _currentDamage = weaponData.baseDamage + (weaponData.baseDamage * towerData.baseDmgModifier);
+        }
         
         private void OnTriggerEnter(Collider other)
         {
@@ -26,7 +33,7 @@ namespace Controllers.Weapon_Controllers
         {
             var enemyController = enemy.GetComponent<EnemyController>();
             if (enemyController == null) return;
-            enemyController.TakeDamage(Mathf.RoundToInt(weaponData.baseDamage + (weaponData.baseDamage * towerData.baseDmgModifier)));
+            enemyController.TakeDamage(Mathf.RoundToInt(_currentDamage * weaponController.damageModifier));
         }
     }
 }

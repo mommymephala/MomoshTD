@@ -11,11 +11,26 @@ namespace Controllers.Weapon_Controllers
         [SerializeField] protected Transform towerTransform;
         [SerializeField] protected Transform muzzleTransform;
         [SerializeField] protected float rotationSpeed;
-
-        private Vector3 _turretPosition;
+        
         private Vector3 _targetPosition;
-        protected Vector3 MuzzleLocation;
         protected Transform TargetEnemy;
+        
+        private Vector3 _turretPosition;
+        protected Vector3 MuzzleLocation;
+        
+        protected float AttackTimer;
+        protected float CurrentCooldown;
+        protected float CurrentProjectileSpeed;
+        public float currentCooldownModifier = 1;
+        public float currentProjectileSpeedModifier = 1;
+        public float damageModifier = 1;
+        public float areaModifier = 1;
+
+        protected virtual void Start()
+        {
+            CurrentCooldown = weaponData.baseCooldown + (weaponData.baseCooldown * towerData.baseCooldownModifier);
+            CurrentProjectileSpeed = weaponData.baseProjectileSpeed + (weaponData.baseProjectileSpeed * towerData.baseProjectileSpeedModifier);
+        }
 
         protected virtual void Update()
         {

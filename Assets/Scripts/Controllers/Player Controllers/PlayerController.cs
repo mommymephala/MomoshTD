@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 using Containers;
+using Controllers.Enemy_Controllers;
 using Controllers.Managers;
 using Controllers.Weapon_Controllers;
-using Random = UnityEngine.Random;
 
 namespace Controllers.Player_Controllers
 {
@@ -13,7 +16,13 @@ namespace Controllers.Player_Controllers
         [Header("References")]
         [SerializeField] private TowerData towerData;
         [SerializeField] private LayerMask coinLayer;
-        [SerializeField] private List<BaseWeaponController> weaponControllers;
+        [SerializeField] public List<BaseWeaponController> weaponControllers;
+        [SerializeField] private List<BaseWeaponController> weaponPrefabsList;
+        [SerializeField] private Transform weaponHolder;
+        private int _howManyLevelsUp;
+        
+        //Time
+        private bool _isGamePaused;
         
         [Header("XP Calculation")]
         [SerializeField] private float baseXpRequirement;
@@ -26,20 +35,19 @@ namespace Controllers.Player_Controllers
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
         private int _currentLevel = 1;
-        
+        private const int MaxLevel = 100;
+
         private float _currentHealth;
         
         private float _playerXp;
         private int _playerGold;
         
-        private float _nextHpRegenTime;
-        private float _bonusHpRegen;
-        
         private Camera _camera;
 
-        // Constants for HP regeneration
+        // HP regeneration (also upgradable)
         private const float HpRegenInterval = 1.0f;
-        private const int MaxLevel = 100;
+        private float _nextHpRegenTime;
+        private float _bonusHpRegen;
 
         private void Awake()
         {
@@ -56,12 +64,15 @@ namespace Controllers.Player_Controllers
 
         private void Update()
         {
+            if (_isGamePaused)
+            {
+                return;
+            }
+            
             if (Input.GetMouseButtonDown(0))
             {
                 CollectCoinsAtClick();
             }
-            
-            CheckForLevelUp();
             
             // Check for HP regeneration
             if (!(_currentHealth < _maxCurrentHealth) || !(Time.time >= _nextHpRegenTime)) return;
@@ -83,21 +94,22 @@ namespace Controllers.Player_Controllers
         
         private bool CheckForLevelUp()
         {
-            // Check if the player has enough XP to level up
             if (_currentLevel >= _xpLevelThresholds.Count || !(_playerXp >= _xpLevelThresholds[_currentLevel - 1]))
-                return false; // Return the flag indicating whether a level-up occurred
+                return false;
+            
             _currentLevel++;
-            Debug.Log("Level Up! Current Level: " + _currentLevel);
-
-            return true; // Return the flag indicating whether a level-up occurred
+            return true;
         }
 
-        private void OnLevelUp()
+        public void OnLevelUp()
         {
-            if (!CheckForLevelUp()) return;
+            if (_howManyLevelsUp <= 0) return;
+            _howManyLevelsUp--;
             PauseGame();
+            _isGamePaused = true;
+            Debug.Log("Level Up! Current Level: " + (_currentLevel - _howManyLevelsUp));
             
-            var upgradeOptions = GenerateUpgradeOptions(towerData, weaponControllers);
+            var upgradeOptions = GenerateUpgradeOptions();
 
             // Randomly select two upgrade options
             var optionIndex1 = Random.Range(0, upgradeOptions.Count);
@@ -108,89 +120,167 @@ namespace Controllers.Player_Controllers
             UpgradeOption option1 = upgradeOptions[optionIndex1];
             UpgradeOption option2 = upgradeOptions[optionIndex2];
             
-            // TODO: Present the upgrade options to the player and let them choose
-            // TODO: Handle selection UI here
-
-            ResumeGame();
-        }
-
-        private static void PauseGame()
-        {
-            Time.timeScale = 0;
+            PresentUpgradeChoices(option1, option2);
         }
         
-        private static void ResumeGame()
+        private List<UpgradeOption> GenerateUpgradeOptions()
         {
-            Time.timeScale = 1;
-        }
-
-        private void PresentUpgradeChoices()
-        {
-            var upgradeOptions = GenerateUpgradeOptions(towerData, weaponControllers);
-            UIManager.Instance.ShowUpgradePanel(upgradeOptions, OnUpgradeChoiceSelected);
-            // TODO: Actually do the UI
-        }
-        
-        private static List<UpgradeOption> GenerateUpgradeOptions(TowerData towerData, List<BaseWeaponController> weaponControllers)
-        {
-            var options = new List<UpgradeOption>();
-
-            foreach (BaseWeaponController weaponController in weaponControllers)
+            var options = new List<UpgradeOption>
             {
-                // Check if the weapon can increase damage
-                if (weaponController.weaponData.baseDamage * towerData.baseDmgModifier < weaponController.weaponData.baseDamage)
+                new UpgradeOption
                 {
-                    options.Add(new UpgradeOption
-                    {
-                        type = UpgradeType.WeaponDamage,
-                        description = "Increase " + weaponController.weaponData.name + " Damage"
-                    });
-                }
-
-                // Check if the weapon can increase projectile speed
-                if (weaponController.weaponData.baseProjectileSpeed * towerData.baseProjectileSpeedModifier < weaponController.weaponData.baseProjectileSpeed)
+                    type = UpgradeType.WeaponDamage,
+                    description = "Increase Damage"
+                },
+                new UpgradeOption
                 {
-                    options.Add(new UpgradeOption
-                    {
-                        type = UpgradeType.ProjectileSpeed,
-                        description = "Increase " + weaponController.weaponData.name + " Projectile Speed"
-                    });
+                    type = UpgradeType.ProjectileSpeed,
+                    description = "Increase Projectile Speed"
+                },
+                new UpgradeOption
+                {
+                    type = UpgradeType.TowerMaxHp,
+                    description = "Increase Tower Max HP"
+                },
+                new UpgradeOption
+                {
+                    type = UpgradeType.HealthRegenAmount,
+                    description = "Increase Health Regeneration"
+                },
+                new UpgradeOption
+                {
+                    type = UpgradeType.AoeEffect,
+                    description = "Improve AOE Effect"
+                },
+                new UpgradeOption
+                {
+                    type = UpgradeType.WeaponCooldown,
+                    description = "Reduce Cooldown"
                 }
-        
-                // TODO: Add other upgrade options
-
+            };
+            if (CanAttachNewWeapon())
+            {
+                options.Add(new UpgradeOption 
+                { 
+                    type = UpgradeType.AddNewWeapon,
+                    description = "Add New Weapon" 
+                });
             }
 
             return options;
         }
-
-        private static void OnUpgradeChoiceSelected(UpgradeOption chosenUpgrade)
+        
+        private void PresentUpgradeChoices(UpgradeOption option1, UpgradeOption option2)
         {
-            ApplyUpgrade(chosenUpgrade);
-            ResumeGame();
+            var upgradeOptions = new List<UpgradeOption> { option1, option2 };
+            UIManager.Instance.ShowUpgradePanel(upgradeOptions, OnUpgradeChoiceSelected);
         }
 
-        private static void ApplyUpgrade(UpgradeOption upgrade)
+        private void ApplyUpgrade(UpgradeOption upgrade)
         {
             switch (upgrade.type)
             {
                 case UpgradeType.WeaponDamage:
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.damageModifier += 0.1f; // Increase damage by 10%
+                    }
+                    Debug.Log("Upgraded Weapon Damage!");
                     break;
+
                 case UpgradeType.ProjectileSpeed:
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.currentProjectileSpeedModifier += 0.1f;
+                    }
+                    Debug.Log("Increased Projectile Speed!");
                     break;
+
+                case UpgradeType.WeaponCooldown:
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.currentCooldownModifier -= 0.1f;
+                    }
+                    Debug.Log("Reduced Weapon Cooldown!");
+                    break;
+
                 case UpgradeType.AoeEffect:
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.areaModifier += 0.1f;
+                    }
+                    Debug.Log("Improved AOE Effect!");
                     break;
+
                 case UpgradeType.TowerMaxHp:
+                    _maxCurrentHealth += 10; // Increase max health by 10
+                    _currentHealth = Mathf.Min(_currentHealth + 10, _maxCurrentHealth); // Also heal the tower
+                    Debug.Log("Increased Tower Max HP! New Tower Max Health: " + _maxCurrentHealth);
                     break;
-                case UpgradeType.HealthRegenSpeed:
+
+                case UpgradeType.HealthRegenAmount:
+                    _bonusHpRegen += 0.1f; // Increase health regeneration amount by 0.1
+                    Debug.Log("Increased Health Regeneration! New Bonus HP Regen: " + _bonusHpRegen);
                     break;
+                
                 case UpgradeType.AddNewWeapon:
+                    AttachNewWeapon();
                     break;
-                // TODO: Handle other upgrade types as needed
-                // TODO: Think about a default statement
+                        
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+        
+        // ReSharper disable Unity.PerformanceAnalysis
+        private bool CanAttachNewWeapon()
+        {
+            return weaponHolder != null && weaponPrefabsList.Any(weaponPrefab => !IsWeaponAlreadyAttached(weaponHolder, weaponPrefab));
+        }
+
+        // ReSharper disable Unity.PerformanceAnalysis
+        private void AttachNewWeapon()
+        {
+            if (weaponHolder == null)
+            {
+                Debug.LogError("WeaponHolder not found.");
+                return;
+            }
+
+            // Check the list of weapon prefabs for ones that are not already attached
+            foreach (BaseWeaponController weaponPrefab in weaponPrefabsList)
+            {
+                if (IsWeaponAlreadyAttached(weaponHolder, weaponPrefab)) continue;
+                GameObject newWeapon = Instantiate(weaponPrefab.gameObject, weaponHolder.position, Quaternion.identity);
+                newWeapon.transform.SetParent(weaponHolder);
+                break;
+            }
+        }
+
+        private static bool IsWeaponAlreadyAttached(Component weaponHolder, Component weaponPrefab)
+        {
+            return weaponHolder.GetComponentsInChildren<BaseWeaponController>().Any(child => child.gameObject.CompareTag(weaponPrefab.tag));
+        }
+        
+        // ReSharper disable Unity.PerformanceAnalysis
+        private void OnUpgradeChoiceSelected(UpgradeOption chosenUpgrade)
+        {
+            ApplyUpgrade(chosenUpgrade);
+            ResumeGame();
+            _isGamePaused = false;
+            
+            UIManager.Instance.HideUpgradePanel();
+        }
+        
+        private static void PauseGame()
+        {
+            TimeControl.Instance.previousTimeScale = Time.timeScale;
+            Time.timeScale = 0;
+        }
+
+        private static void ResumeGame()
+        {
+            Time.timeScale = TimeControl.Instance.previousTimeScale;
         }
 
         private void RegenerateHp()
@@ -206,6 +296,7 @@ namespace Controllers.Player_Controllers
             return Physics.Raycast(ray, out RaycastHit hit) ? hit.point : Vector3.zero;
         }
         
+        [SuppressMessage("ReSharper", "Unity.PreferNonAllocApi")]
         private void CollectCoinsAtClick()
         {
             Vector3 clickPosition = GetMouseClickPosition();
@@ -214,7 +305,12 @@ namespace Controllers.Player_Controllers
             foreach (Collider coinCollider in colliders)
             {
                 CollectCoin(coinCollider.gameObject);
+                if (CheckForLevelUp())
+                {
+                    _howManyLevelsUp++;
+                }
             }
+            OnLevelUp();
         }
 
         private void CollectCoin(GameObject coin)
@@ -226,7 +322,6 @@ namespace Controllers.Player_Controllers
                 {
                     var xpAmount = xpGem.GetXpAmount();
                     AddXp(xpAmount);
-                    Debug.Log("XP: " + _playerXp);
                 }
             }
 
@@ -237,7 +332,6 @@ namespace Controllers.Player_Controllers
                 {
                     var goldAmount = goldCoin.GetGoldAmount();
                     AddGold(goldAmount);
-                    Debug.Log("GOLD: " + _playerGold);
                 }
             }
             
@@ -266,6 +360,7 @@ namespace Controllers.Player_Controllers
         private void Die()
         {
             Destroy(gameObject);
+            EnemySpawnManager.Instance.gameObject.SetActive(false);
         }
     }
 }

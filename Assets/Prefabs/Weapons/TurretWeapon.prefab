@@ -178,8 +178,8 @@ GameObject:
   - component: {fileID: 9115034254400576657}
   - component: {fileID: 9054836842366099861}
   m_Layer: 7
-  m_Name: DemoTurret
-  m_TagString: Player
+  m_Name: TurretWeapon
+  m_TagString: TurretWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -217,3 +217,7 @@ MonoBehaviour:
   towerTransform: {fileID: 9115034253592890240}
   muzzleTransform: {fileID: 9115034254363419041}
   rotationSpeed: 500
+  currentCooldownModifier: 1
+  currentProjectileSpeedModifier: 1
+  damageModifier: 1
+  areaModifier: 1

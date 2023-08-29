@@ -5,12 +5,11 @@ namespace Controllers
 {
     public class TowerSelection : MonoBehaviour
     {
-        public int towerTypeIndex; // Assign a unique index to each tower type button
-        public Button button; // Reference to the button component
+        public int towerTypeIndex;
+        public Button button;
 
         private void Start()
         {
-            // Add a listener to the button's onClick event
             button.onClick.AddListener(SelectTower);
         }
 

@@ -22,7 +22,14 @@ namespace Controllers.Enemy_Controllers
 
         private void Update()
         {
-            MoveToTower();
+            if (_tower != null)
+            {
+                MoveToTower();
+            }
+            else
+            {
+                _agent.speed = 0;
+            }
         }
 
         private void MoveToTower()

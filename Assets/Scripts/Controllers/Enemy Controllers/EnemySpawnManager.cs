@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using Containers;
 using UnityEngine;
 
@@ -5,21 +6,35 @@ namespace Controllers.Enemy_Controllers
 {
     public class EnemySpawnManager : MonoBehaviour
     {
+        public static EnemySpawnManager Instance;
         [SerializeField] private EnemyData enemyData;
-        [SerializeField] private Transform towerTransform;
+        [SerializeField] private GameObject towerLocation;
+        
         [SerializeField] private float spawnFrequencyMin;
         [SerializeField] private float spawnFrequencyMax;
+        
         [SerializeField] private int minEnemiesPerSpawn;
         [SerializeField] private int maxEnemiesPerSpawn;
+        
         [SerializeField] private float maxEnemiesScalingTime;
+        
         [SerializeField] private float spawnRadius;
         [SerializeField] private float minDistanceFromTower;
+        
         [SerializeField] private LayerMask obstacleLayer;
         private Transform _spawnPoint;
         private float _nextSpawnTime;
 
         private void Awake()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
             _spawnPoint = transform;
             _nextSpawnTime = Time.time + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
         }
@@ -43,12 +58,13 @@ namespace Controllers.Enemy_Controllers
             return numEnemies;
         }
 
+        [SuppressMessage("ReSharper", "Unity.PreferNonAllocApi")]
         private void SpawnEnemy()
         {
             Vector3 randomSpawnPosition = Random.insideUnitSphere * spawnRadius;
             randomSpawnPosition.y = _spawnPoint.position.y;
 
-            Vector3 towerPosition = towerTransform.position;
+            Vector3 towerPosition = towerLocation.transform.position;
 
             Vector3 directionToTower = towerPosition - randomSpawnPosition;
             if (directionToTower.magnitude < minDistanceFromTower)
@@ -67,9 +83,9 @@ namespace Controllers.Enemy_Controllers
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, spawnRadius);
 
-            if (towerTransform == null) return;
+            if (towerLocation == null) return;
             Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(towerTransform.position, minDistanceFromTower);
+            Gizmos.DrawWireSphere(towerLocation.transform.position, minDistanceFromTower);
         }
     }
 }
