@@ -28,9 +28,6 @@ namespace Controllers.Player_Controllers
         [SerializeField] private float baseXpRequirement;
         [SerializeField] private float xpMultiplierForNextLv;
         [SerializeField] private float collectionRadius;
-
-        //UPGRADABLE
-        private float _maxCurrentHealth;
         
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
@@ -39,14 +36,18 @@ namespace Controllers.Player_Controllers
 
         private float _currentHealth;
         
-        private float _playerXp;
+        private int _playerXp;
         private int _playerGold;
+        //public int totalGold;
         
         private Camera _camera;
 
-        // HP regeneration (also upgradable)
+        // HP regeneration
         private const float HpRegenInterval = 1.0f;
         private float _nextHpRegenTime;
+        
+        //UPGRADABLE
+        private float _maxCurrentHealth;
         private float _bonusHpRegen;
 
         private void Awake()
@@ -60,7 +61,13 @@ namespace Controllers.Player_Controllers
         private void Start()
         {
             GenerateXpLevelThresholds();
+            //LoadPlayerProgress();
         }
+        
+        // private void LoadPlayerProgress()
+        // {
+        //     totalGold = PlayerPrefs.GetInt("TotalGold", 0);
+        // }
 
         private void Update()
         {
@@ -108,7 +115,7 @@ namespace Controllers.Player_Controllers
             PauseGame();
             _isGamePaused = true;
             Debug.Log("Level Up! Current Level: " + (_currentLevel - _howManyLevelsUp));
-            
+
             var upgradeOptions = GenerateUpgradeOptions();
 
             // Randomly select two upgrade options
@@ -119,7 +126,7 @@ namespace Controllers.Player_Controllers
 
             UpgradeOption option1 = upgradeOptions[optionIndex1];
             UpgradeOption option2 = upgradeOptions[optionIndex2];
-            
+
             PresentUpgradeChoices(option1, option2);
         }
         
@@ -183,7 +190,7 @@ namespace Controllers.Player_Controllers
                 case UpgradeType.WeaponDamage:
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
-                        weaponController.damageModifier += 0.1f; // Increase damage by 10%
+                        weaponController.damageModifier += 0.1f;
                     }
                     Debug.Log("Upgraded Weapon Damage!");
                     break;
@@ -247,12 +254,19 @@ namespace Controllers.Player_Controllers
                 return;
             }
 
-            // Check the list of weapon prefabs for ones that are not already attached
             foreach (BaseWeaponController weaponPrefab in weaponPrefabsList)
             {
                 if (IsWeaponAlreadyAttached(weaponHolder, weaponPrefab)) continue;
-                GameObject newWeapon = Instantiate(weaponPrefab.gameObject, weaponHolder.position, Quaternion.identity);
-                newWeapon.transform.SetParent(weaponHolder);
+    
+                Vector3 localPosition = weaponPrefab.transform.localPosition;
+                Quaternion localRotation = weaponPrefab.transform.localRotation;
+    
+                GameObject newWeapon = Instantiate(weaponPrefab.gameObject, weaponHolder);
+    
+                newWeapon.transform.localPosition = localPosition;
+                newWeapon.transform.localRotation = localRotation;
+    
+                weaponControllers.Add(newWeapon.GetComponent<BaseWeaponController>());
                 break;
             }
         }
@@ -330,7 +344,7 @@ namespace Controllers.Player_Controllers
                 var goldCoin = coin.GetComponent<GoldCoinController>();
                 if (goldCoin != null)
                 {
-                    var goldAmount = goldCoin.GetGoldAmount();
+                    var goldAmount = GoldCoinController.GetGoldAmount();
                     AddGold(goldAmount);
                 }
             }
@@ -338,7 +352,7 @@ namespace Controllers.Player_Controllers
             Destroy(coin);
         }
 
-        private void AddXp(float xpAmount)
+        private void AddXp(int xpAmount)
         {
             _playerXp += xpAmount;
         }

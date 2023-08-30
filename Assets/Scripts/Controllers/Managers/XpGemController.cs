@@ -7,7 +7,7 @@ namespace Controllers.Managers
         [SerializeField] private int minXpAmount;
         [SerializeField] private int maxXpAmount;
 
-        public float GetXpAmount()
+        public int GetXpAmount()
         {
             var xpAmount = Random.Range(minXpAmount, maxXpAmount + 1);
             return xpAmount;

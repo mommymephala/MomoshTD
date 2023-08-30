@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Controllers
+namespace Controllers.Managers
 {
     public class TowerSelection : MonoBehaviour
     {

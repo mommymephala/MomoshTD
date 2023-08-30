@@ -2,23 +2,23 @@ using System;
 using System.Collections.Generic;
 using Containers;
 using Controllers.Player_Controllers;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
-namespace Controllers
+namespace Controllers.Managers
 {
     public class UIManager : MonoBehaviour
     {
         [Header("References")]
         public static UIManager Instance;
         public PlayerController playerController;
-        
+
         [Header("UI Settings/References")]
         public GameObject upgradePanel;
         public Button upgradeButtonPrefab;
         public int buttonSpacing = 60;
-        
+
         private void Awake()
         {
             if (Instance == null)
@@ -30,7 +30,7 @@ namespace Controllers
                 Destroy(gameObject);
             }
         }
-        
+
         public void ShowUpgradePanel(List<UpgradeOption> upgradeOptions, Action<UpgradeOption> onUpgradeChosen)
         {
             upgradePanel.SetActive(true);
@@ -58,7 +58,7 @@ namespace Controllers
 
                 // Calculate the preferred width of the text content
                 var preferredWidth = LayoutUtility.GetPreferredWidth(buttonText.rectTransform);
-        
+
                 // Calculate the font size based on the preferred width
                 var fontSize = 0.8f * buttonText.fontSize * (buttonRectTransform.sizeDelta.x / preferredWidth);
                 buttonText.fontSize = Mathf.FloorToInt(fontSize); // Adjust the font size
@@ -67,7 +67,7 @@ namespace Controllers
                 button.onClick.AddListener(() => playerController.OnLevelUp());
             }
         }
-        
+
         public void HideUpgradePanel()
         {
             upgradePanel.SetActive(false);

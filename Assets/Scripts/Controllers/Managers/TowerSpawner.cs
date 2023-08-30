@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Controllers
+namespace Controllers.Managers
 {
     public class TowerSpawner : MonoBehaviour
     {

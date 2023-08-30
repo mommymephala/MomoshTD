@@ -246,6 +246,16 @@ PrefabInstance:
       objectReference: {fileID: 1632561210}
     - target: {fileID: 9147876386303268449, guid: 645703ebb129dda468e96b9a4c716e55,
         type: 3}
+      propertyPath: currentXpText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9147876386303268449, guid: 645703ebb129dda468e96b9a4c716e55,
+        type: 3}
+      propertyPath: requiredXpText
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 9147876386303268449, guid: 645703ebb129dda468e96b9a4c716e55,
+        type: 3}
       propertyPath: playerController
       value: 
       objectReference: {fileID: 3986379336230996123}
@@ -520,7 +530,7 @@ PrefabInstance:
     - target: {fileID: 3221412179839132100, guid: c884d4109d9a6314ab1ddf8d537508ed,
         type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3221412179839132101, guid: c884d4109d9a6314ab1ddf8d537508ed,
         type: 3}
@@ -1666,7 +1676,7 @@ PrefabInstance:
     - target: {fileID: 3986379336412593339, guid: a9ce101e9a34c854191d6253df41785e,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3986379336412593340, guid: a9ce101e9a34c854191d6253df41785e,
         type: 3}

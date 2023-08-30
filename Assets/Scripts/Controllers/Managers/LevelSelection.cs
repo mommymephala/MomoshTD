@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace Controllers
+namespace Controllers.Managers
 {
     public class LevelSelection : MonoBehaviour
     {
