@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 7044508681317021302}
   - component: {fileID: 5544837160824048827}
   m_Layer: 6
-  m_Name: Enemy
-  m_TagString: Enemy
+  m_Name: BOSS
+  m_TagString: Boss
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,8 +30,8 @@ Transform:
   m_GameObject: {fileID: 2075529667179130034}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7235974162775320521}
   m_Father: {fileID: 0}
@@ -51,7 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDamageScalingTime: 30
   maxDamageScaleValue: 1.5
-  enemyData: {fileID: 11400000, guid: 49a39791e184fbd439186c40039b3948, type: 2}
+  enemyData: {fileID: 11400000, guid: 619ffd1d2f24a38479644af2250edc42, type: 2}
   xpGemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
     type: 3}
   goldPrefab: {fileID: 3903889357748954759, guid: a78c67939d687964c98b846f6a0281eb,
@@ -139,7 +139,7 @@ GameObject:
   - component: {fileID: 1395734722666306536}
   - component: {fileID: 8624454247818509422}
   m_Layer: 6
-  m_Name: EnemyMesh
+  m_Name: BossMesh
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

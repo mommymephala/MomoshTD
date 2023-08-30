@@ -14,6 +14,7 @@ namespace Containers
         public int goldMinDropAmount;
         public int goldMaxDropAmount;
         public float goldDropChance;
+        public float healthDropChance;
         public float moveSpeed;
         public float damageInterval;
         public float damageRadius;

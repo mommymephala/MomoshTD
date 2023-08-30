@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dfcdfd0229c85644593de5277c6a1baf, type: 3}
-  m_Name: Demo Enemy
+  m_Name: Boss Enemy
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2075529667179130034, guid: aa66c13ce9f67e9458bd164a14cf2b8b,
+  enemyPrefab: {fileID: 2075529667179130034, guid: 24408576c4be9b84aaf6d6524ef83c7d,
     type: 3}
-  baseHealth: 50
-  baseDamage: 6
+  baseHealth: 200
+  baseDamage: 8
   xpGemMinDropAmount: 1
   xpGemMaxDropAmount: 3
   goldMinDropAmount: 1
   goldMaxDropAmount: 2
-  goldDropChance: 0.15
-  healthDropChance: 0.1
-  moveSpeed: 3.5
+  goldDropChance: 1
+  healthDropChance: 0.25
+  moveSpeed: 2
   damageInterval: 0.5
   damageRadius: 1.5

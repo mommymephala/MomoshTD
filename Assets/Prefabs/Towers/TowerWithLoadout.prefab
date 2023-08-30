@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
-  coinLayer:
+  pickupLayer:
     serializedVersion: 2
     m_Bits: 512
   weaponControllers:
@@ -60,6 +60,10 @@ MonoBehaviour:
   baseXpRequirement: 30
   xpMultiplierForNextLv: 1.6
   collectionRadius: 5
+  spawnManager: {fileID: 1342217186125767111, guid: 5db93e7547917914d9a603db470a9cae,
+    type: 3}
+  currentHealth: 0
+  maxCurrentHealth: 0
 --- !u!1 &3986379336841925934
 GameObject:
   m_ObjectHideFlags: 0

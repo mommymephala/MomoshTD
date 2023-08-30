@@ -9,6 +9,8 @@ TagManager:
   - XpGem
   - BombWeapon
   - TurretWeapon
+  - HealthGem
+  - Boss
   layers:
   - Default
   - TransparentFX
@@ -19,7 +21,7 @@ TagManager:
   - Enemy
   - Player
   - Obstacle
-  - Coin
+  - Pickup
   - 
   - 
   - 

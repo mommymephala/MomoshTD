@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace Controllers.Player_Controllers
     {
         [Header("References")]
         [SerializeField] private TowerData towerData;
-        [SerializeField] private LayerMask coinLayer;
+        [SerializeField] private LayerMask pickupLayer;
         [SerializeField] public List<BaseWeaponController> weaponControllers;
         [SerializeField] private List<BaseWeaponController> weaponPrefabsList;
         [SerializeField] private Transform weaponHolder;
@@ -28,13 +29,21 @@ namespace Controllers.Player_Controllers
         [SerializeField] private float baseXpRequirement;
         [SerializeField] private float xpMultiplierForNextLv;
         [SerializeField] private float collectionRadius;
+
+        [Header("Events")] 
+        [SerializeField] private EnemySpawnManager spawnManager;
+        private float _elapsedTime;
+        private float _bossSpawnChance;
+        private const float InitialSpawnChance = 0.2f;
+        private const float MaxSpawnChance = 1.0f;
+        private const float ChanceIncreaseInterval = 30f;
         
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
         private int _currentLevel = 1;
         private const int MaxLevel = 100;
 
-        private float _currentHealth;
+        [HideInInspector] public float currentHealth;
         
         private int _playerXp;
         private int _playerGold;
@@ -47,15 +56,17 @@ namespace Controllers.Player_Controllers
         private float _nextHpRegenTime;
         
         //UPGRADABLE
-        private float _maxCurrentHealth;
+        [HideInInspector] public float maxCurrentHealth;
         private float _bonusHpRegen;
 
         private void Awake()
         {
             _camera = Camera.main;
-            _currentHealth = _maxCurrentHealth = towerData.maxHp;
+            currentHealth = maxCurrentHealth = towerData.maxHp;
             _nextHpRegenTime = Time.time + HpRegenInterval;
             _bonusHpRegen = towerData.baseHpRegen;
+            _elapsedTime = 0f;
+            _bossSpawnChance = InitialSpawnChance;
         }
         
         private void Start()
@@ -75,16 +86,70 @@ namespace Controllers.Player_Controllers
             {
                 return;
             }
-            
+    
+            // Increment elapsed time
+            _elapsedTime += Time.deltaTime;
+
+            // Update boss spawn chance based on elapsed time
+            UpdateBossSpawnChance();
+
+            // Check if it's time to attempt a boss spawn
+            if (_elapsedTime >= ChanceIncreaseInterval)
+            {
+                var calculatedSpawnChance = CalculateBossSpawnChance(InitialSpawnChance, MaxSpawnChance, _elapsedTime);
+
+                if (Random.value <= calculatedSpawnChance)
+                {
+                    // Spawn the boss encounter
+                    spawnManager.SpawnBoss(_bossSpawnChance);
+
+                    // Reset elapsed time for the next spawn attempt
+                    _elapsedTime = 0f;
+
+                    // Reset boss spawn chance to 0
+                    _bossSpawnChance = 0f;
+
+                    // Start the boss spawn chance increase countdown
+                    StartCoroutine(StartBossSpawnChanceIncrease());
+                }
+            }
+    
             if (Input.GetMouseButtonDown(0))
             {
-                CollectCoinsAtClick();
+                CollectPickupsAtClick();
             }
-            
+    
             // Check for HP regeneration
-            if (!(_currentHealth < _maxCurrentHealth) || !(Time.time >= _nextHpRegenTime)) return;
+            if (!(currentHealth < maxCurrentHealth) || !(Time.time >= _nextHpRegenTime)) return;
             RegenerateHp();
             _nextHpRegenTime = Time.time + HpRegenInterval;
+        }
+        
+        private float CalculateBossSpawnChance(float initialChance, float maxChance, float elapsedTime)
+        {
+            // Calculate the normalized time in the range [0, 1]
+            var normalizedTime = Mathf.Clamp01(elapsedTime / ChanceIncreaseInterval);
+
+            // Interpolate between initialChance and maxChance based on normalizedTime
+            _bossSpawnChance = Mathf.Lerp(initialChance, maxChance, normalizedTime);
+
+            return _bossSpawnChance;
+        }
+
+        private IEnumerator StartBossSpawnChanceIncrease()
+        {
+            yield return new WaitForSeconds(ChanceIncreaseInterval);
+            
+            // Reset the boss spawn chance to InitialSpawnChance
+            _bossSpawnChance = InitialSpawnChance;
+        }
+
+        private void UpdateBossSpawnChance()
+        {
+            if (_bossSpawnChance < MaxSpawnChance)
+            {
+                _bossSpawnChance += Time.deltaTime / ChanceIncreaseInterval;
+            }
         }
         
         private void GenerateXpLevelThresholds()
@@ -220,9 +285,9 @@ namespace Controllers.Player_Controllers
                     break;
 
                 case UpgradeType.TowerMaxHp:
-                    _maxCurrentHealth += 10; // Increase max health by 10
-                    _currentHealth = Mathf.Min(_currentHealth + 10, _maxCurrentHealth); // Also heal the tower
-                    Debug.Log("Increased Tower Max HP! New Tower Max Health: " + _maxCurrentHealth);
+                    maxCurrentHealth += 10; // Increase max health by 10
+                    currentHealth = Mathf.Min(currentHealth + 10, maxCurrentHealth); // Also heal the tower
+                    Debug.Log("Increased Tower Max HP! New Tower Max Health: " + maxCurrentHealth);
                     break;
 
                 case UpgradeType.HealthRegenAmount:
@@ -300,7 +365,7 @@ namespace Controllers.Player_Controllers
         private void RegenerateHp()
         {
             var hpToRegen = Mathf.RoundToInt(towerData.baseHpRegen + _bonusHpRegen);
-            _currentHealth = Mathf.Min(_currentHealth + hpToRegen, _maxCurrentHealth);
+            currentHealth = Mathf.Min(currentHealth + hpToRegen, maxCurrentHealth);
         }
         
         private Vector3 GetMouseClickPosition()
@@ -311,14 +376,14 @@ namespace Controllers.Player_Controllers
         }
         
         [SuppressMessage("ReSharper", "Unity.PreferNonAllocApi")]
-        private void CollectCoinsAtClick()
+        private void CollectPickupsAtClick()
         {
             Vector3 clickPosition = GetMouseClickPosition();
 
-            var colliders = Physics.OverlapSphere(clickPosition, collectionRadius, coinLayer);
+            var colliders = Physics.OverlapSphere(clickPosition, collectionRadius, pickupLayer);
             foreach (Collider coinCollider in colliders)
             {
-                CollectCoin(coinCollider.gameObject);
+                CollectPickup(coinCollider.gameObject);
                 if (CheckForLevelUp())
                 {
                     _howManyLevelsUp++;
@@ -327,11 +392,11 @@ namespace Controllers.Player_Controllers
             OnLevelUp();
         }
 
-        private void CollectCoin(GameObject coin)
+        private void CollectPickup(GameObject pickup)
         {
-            if (coin.CompareTag("XpGem"))
+            if (pickup.CompareTag("XpGem"))
             {
-                var xpGem = coin.GetComponent<XpGemController>();
+                var xpGem = pickup.GetComponent<XpGemController>();
                 if (xpGem != null)
                 {
                     var xpAmount = xpGem.GetXpAmount();
@@ -339,17 +404,33 @@ namespace Controllers.Player_Controllers
                 }
             }
 
-            if (coin.CompareTag("Gold"))
+            if (pickup.CompareTag("Gold"))
             {
-                var goldCoin = coin.GetComponent<GoldCoinController>();
+                var goldCoin = pickup.GetComponent<GoldCoinController>();
                 if (goldCoin != null)
                 {
                     var goldAmount = GoldCoinController.GetGoldAmount();
                     AddGold(goldAmount);
                 }
             }
+
+            if (pickup.CompareTag("HealthGem"))
+            {
+                var healthGem = pickup.GetComponent<HealthPickup>();
+                if (healthGem != null)
+                {
+                    var healAmount = healthGem.GetHealAmount(maxCurrentHealth);
+                    Heal(healAmount);
+                }
+            }
             
-            Destroy(coin);
+            Destroy(pickup);
+        }
+
+        private void Heal(int healAmount)
+        {
+            currentHealth = Mathf.Min(currentHealth + healAmount, maxCurrentHealth);
+            Debug.Log("Player healed for " + healAmount + " HP. Current HP: " + currentHealth);
         }
 
         private void AddXp(int xpAmount)
@@ -364,8 +445,8 @@ namespace Controllers.Player_Controllers
 
         public void TowerTakeDamage(int damageAmount)
         {
-            _currentHealth -= damageAmount;
-            if (_currentHealth <= 0)
+            currentHealth -= damageAmount;
+            if (currentHealth <= 0)
             {
                 Die();
             }

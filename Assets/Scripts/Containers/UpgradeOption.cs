@@ -19,6 +19,5 @@ namespace Containers
         TowerMaxHp,
         HealthRegenAmount,
         AddNewWeapon,
-        // TODO: Add other possible upgrade types
     }
 }

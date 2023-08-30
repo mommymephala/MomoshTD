@@ -8,6 +8,7 @@ namespace Controllers.Enemy_Controllers
     {
         public static EnemySpawnManager Instance;
         [SerializeField] private EnemyData enemyData;
+        [SerializeField] private EnemyData bossData;
         [SerializeField] private GameObject towerLocation;
         
         [SerializeField] private float spawnFrequencyMin;
@@ -75,6 +76,28 @@ namespace Controllers.Enemy_Controllers
             if (Physics.OverlapSphere(randomSpawnPosition, 1f, obstacleLayer).Length <= 0)
             {
                 Instantiate(enemyData.enemyPrefab, randomSpawnPosition, Quaternion.identity);
+            }
+        }
+        
+        [SuppressMessage("ReSharper", "Unity.PreferNonAllocApi")]
+        public void SpawnBoss(float bossSpawnChance)
+        {
+            // Calculate a random position within the spawn radius
+            Vector3 randomSpawnPosition = Random.insideUnitSphere * spawnRadius;
+            randomSpawnPosition.y = _spawnPoint.position.y;
+
+            // Make sure the boss spawns a minimum distance away from the tower
+            Vector3 towerPosition = towerLocation.transform.position;
+            Vector3 directionToTower = towerPosition - randomSpawnPosition;
+            if (directionToTower.magnitude < minDistanceFromTower)
+            {
+                randomSpawnPosition = towerPosition + directionToTower.normalized * minDistanceFromTower;
+            }
+
+            if (Physics.OverlapSphere(randomSpawnPosition, 1f, obstacleLayer).Length > 0) return;
+            if (Random.value <= bossSpawnChance)
+            {
+                Instantiate(bossData.enemyPrefab, randomSpawnPosition, Quaternion.identity);
             }
         }
 
