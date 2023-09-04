@@ -15,7 +15,6 @@ namespace Controllers.Managers
 
         private void SelectTower()
         {
-            // Store the selected tower type index in PlayerPrefs
             PlayerPrefs.SetInt("SelectedTowerType", towerTypeIndex);
         }
     }

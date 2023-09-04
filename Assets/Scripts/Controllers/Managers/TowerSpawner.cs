@@ -9,7 +9,6 @@ namespace Controllers.Managers
         private void Start()
         {
             var selectedTowerType = PlayerPrefs.GetInt("SelectedTowerType", 0);
-
             Instantiate(towerPrefabs[selectedTowerType], transform.position, Quaternion.identity);
         }
     }

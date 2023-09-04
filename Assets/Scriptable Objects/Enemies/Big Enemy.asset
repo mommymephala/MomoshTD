@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dfcdfd0229c85644593de5277c6a1baf, type: 3}
-  m_Name: Boss Enemy
+  m_Name: Big Enemy
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2075529667179130034, guid: 63f492556c6184548a0c4694fe1b2e56,
+  enemyPrefab: {fileID: 2075529667179130034, guid: 24408576c4be9b84aaf6d6524ef83c7d,
     type: 3}
-  baseHealth: 300
+  baseHealth: 200
   baseDamage: 8
   xpGemMinDropAmount: 1
   xpGemMaxDropAmount: 3

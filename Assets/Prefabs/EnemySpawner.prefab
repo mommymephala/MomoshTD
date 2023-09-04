@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1342217186125767110}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -45,9 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyData: {fileID: 11400000, guid: 49a39791e184fbd439186c40039b3948, type: 2}
-  bossData: {fileID: 11400000, guid: 619ffd1d2f24a38479644af2250edc42, type: 2}
-  towerLocation: {fileID: 1547461189086369576, guid: 71d04115de265c548845fc240aa5ea0a,
-    type: 3}
+  bigEnemyData: {fileID: 11400000, guid: 619ffd1d2f24a38479644af2250edc42, type: 2}
+  bossData: {fileID: 11400000, guid: 8b2eb3a503e2ea74dac4d8c933b284ee, type: 2}
+  towerLocation: {fileID: 0}
   spawnFrequencyMin: 1
   spawnFrequencyMax: 3
   minEnemiesPerSpawn: 2

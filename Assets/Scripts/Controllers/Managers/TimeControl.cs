@@ -31,7 +31,7 @@ namespace Controllers.Managers
         public void ToggleTime()
         {
             _timeScaleIndex = (_timeScaleIndex + 1) % _timeScales.Length;
-            previousTimeScale = Time.timeScale; // Store the current time scale
+            previousTimeScale = Time.timeScale;
             Time.timeScale = _timeScales[_timeScaleIndex];
             UpdateButtonText();
         }

@@ -56,12 +56,12 @@ MonoBehaviour:
   - {fileID: 9054836842366099861, guid: c88fb57993406b14c9f1c9d790d8e398, type: 3}
   - {fileID: 4966442387666248633, guid: 98210b04a087b434aadc8d9227b8357c, type: 3}
   weaponHolder: {fileID: 4877975804677876616}
-  baseXpRequirement: 20
-  xpMultiplierForNextLv: 1.2
+  baseXpRequirement: 30
+  xpMultiplierForNextLv: 1.6
   collectionRadius: 5
-  spawnManager: {fileID: 1342217186125767111, guid: 5db93e7547917914d9a603db470a9cae,
-    type: 3}
+  gameTime: 0
   currentHealth: 0
+  totalGold: 0
   maxCurrentHealth: 0
 --- !u!1 &4877975804626635384
 GameObject:

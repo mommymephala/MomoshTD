@@ -10,8 +10,7 @@ namespace Containers
         public int baseDamage;
         public float baseProjectileSpeed;
         public float baseCooldown;
-        public float baseAoeDuration;
+        //public float baseAoeDuration;
         public float baseAoeRadius;
-        //public float baseMaxDistance;
     }
 }

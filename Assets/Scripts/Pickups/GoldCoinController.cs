@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Controllers.Managers
+namespace Pickups
 {
     public class GoldCoinController : MonoBehaviour
     {

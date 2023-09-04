@@ -60,9 +60,11 @@ MonoBehaviour:
   baseXpRequirement: 30
   xpMultiplierForNextLv: 1.6
   collectionRadius: 5
-  spawnManager: {fileID: 1342217186125767111, guid: 5db93e7547917914d9a603db470a9cae,
-    type: 3}
+  spawnManager: {fileID: 0}
+  gameTime: 0
+  elapsedTimeText: {fileID: 0}
   currentHealth: 0
+  totalGold: 0
   maxCurrentHealth: 0
 --- !u!1 &3986379336841925934
 GameObject:

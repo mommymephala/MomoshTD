@@ -5,10 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
+using TMPro;
 using Containers;
 using Controllers.Enemy_Controllers;
 using Controllers.Managers;
 using Controllers.Weapon_Controllers;
+using Pickups;
 
 namespace Controllers.Player_Controllers
 {
@@ -31,12 +33,17 @@ namespace Controllers.Player_Controllers
         [SerializeField] private float collectionRadius;
 
         [Header("Events")] 
-        [SerializeField] private EnemySpawnManager spawnManager;
-        private float _elapsedTime;
-        private float _bossSpawnChance;
+        private EnemySpawnManager _spawnManager;
+        public float gameTime;
+        private const float GameEndTime = 600f;
+        private float _bigEnemySpawnTime;
+        private float _bigEnemySpawnChance;
         private const float InitialSpawnChance = 0.2f;
         private const float MaxSpawnChance = 1.0f;
         private const float ChanceIncreaseInterval = 30f;
+        
+        [Header("UI")]
+        private TextMeshProUGUI _gameTimeText;
         
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
@@ -47,7 +54,7 @@ namespace Controllers.Player_Controllers
         
         private int _playerXp;
         private int _playerGold;
-        //public int totalGold;
+        public int totalGold;
         
         private Camera _camera;
 
@@ -56,29 +63,28 @@ namespace Controllers.Player_Controllers
         private float _nextHpRegenTime;
         
         //UPGRADABLE
-        [HideInInspector] public float maxCurrentHealth;
+        public float maxCurrentHealth;
         private float _bonusHpRegen;
 
         private void Awake()
         {
             _camera = Camera.main;
+            _spawnManager = FindObjectOfType<EnemySpawnManager>();
+            _gameTimeText = FindObjectOfType<TextMeshProUGUI>();
+        }
+
+        private void Start()
+        {
             currentHealth = maxCurrentHealth = towerData.maxHp;
             _nextHpRegenTime = Time.time + HpRegenInterval;
             _bonusHpRegen = towerData.baseHpRegen;
-            _elapsedTime = 0f;
-            _bossSpawnChance = InitialSpawnChance;
-        }
-        
-        private void Start()
-        {
+            gameTime = 0f;
+            _bigEnemySpawnTime = 0f;
+            _bigEnemySpawnChance = InitialSpawnChance;
+            _playerGold = 0;
+            totalGold = PlayerPrefs.GetInt("TotalGold");
             GenerateXpLevelThresholds();
-            //LoadPlayerProgress();
         }
-        
-        // private void LoadPlayerProgress()
-        // {
-        //     totalGold = PlayerPrefs.GetInt("TotalGold", 0);
-        // }
 
         private void Update()
         {
@@ -86,31 +92,29 @@ namespace Controllers.Player_Controllers
             {
                 return;
             }
-    
-            // Increment elapsed time
-            _elapsedTime += Time.deltaTime;
 
-            // Update boss spawn chance based on elapsed time
-            UpdateBossSpawnChance();
+            gameTime += Time.deltaTime;
+            
+            EndTheRun();
+            
+            UpdateGameTimeText();
+            
+            // Check for big enemy spawn
+            _bigEnemySpawnTime += Time.deltaTime;
+            UpdateBigEnemySpawnChance();
 
-            // Check if it's time to attempt a boss spawn
-            if (_elapsedTime >= ChanceIncreaseInterval)
+            if (_bigEnemySpawnTime >= ChanceIncreaseInterval)
             {
-                var calculatedSpawnChance = CalculateBossSpawnChance(InitialSpawnChance, MaxSpawnChance, _elapsedTime);
+                var calculatedSpawnChance = CalculateBigEnemySpawnChance(InitialSpawnChance, MaxSpawnChance, gameTime);
 
                 if (Random.value <= calculatedSpawnChance)
                 {
-                    // Spawn the boss encounter
-                    spawnManager.SpawnBoss(_bossSpawnChance);
+                    _spawnManager.SpawnBigEnemy(_bigEnemySpawnChance);
 
-                    // Reset elapsed time for the next spawn attempt
-                    _elapsedTime = 0f;
+                    _bigEnemySpawnTime = 0f;
+                    _bigEnemySpawnChance = 0f;
 
-                    // Reset boss spawn chance to 0
-                    _bossSpawnChance = 0f;
-
-                    // Start the boss spawn chance increase countdown
-                    StartCoroutine(StartBossSpawnChanceIncrease());
+                    StartCoroutine(StartBigEnemySpawnChanceIncrease());
                 }
             }
     
@@ -125,30 +129,36 @@ namespace Controllers.Player_Controllers
             _nextHpRegenTime = Time.time + HpRegenInterval;
         }
         
-        private float CalculateBossSpawnChance(float initialChance, float maxChance, float elapsedTime)
+        [SuppressMessage("ReSharper", "PossibleLossOfFraction")]
+        private void UpdateGameTimeText()
         {
-            // Calculate the normalized time in the range [0, 1]
+            var totalSeconds = Mathf.FloorToInt(gameTime);
+            var minutes = Mathf.FloorToInt(totalSeconds / 60);
+            var seconds = totalSeconds % 60;
+            var gameTimeFormatted = $"{minutes:D2}:{seconds:D2}";
+            _gameTimeText.text = gameTimeFormatted;
+        }
+        
+        private float CalculateBigEnemySpawnChance(float initialChance, float maxChance, float elapsedTime)
+        {
             var normalizedTime = Mathf.Clamp01(elapsedTime / ChanceIncreaseInterval);
 
-            // Interpolate between initialChance and maxChance based on normalizedTime
-            _bossSpawnChance = Mathf.Lerp(initialChance, maxChance, normalizedTime);
+            _bigEnemySpawnChance = Mathf.Lerp(initialChance, maxChance, normalizedTime);
 
-            return _bossSpawnChance;
+            return _bigEnemySpawnChance;
         }
 
-        private IEnumerator StartBossSpawnChanceIncrease()
+        private IEnumerator StartBigEnemySpawnChanceIncrease()
         {
             yield return new WaitForSeconds(ChanceIncreaseInterval);
-            
-            // Reset the boss spawn chance to InitialSpawnChance
-            _bossSpawnChance = InitialSpawnChance;
+            _bigEnemySpawnChance = InitialSpawnChance;
         }
 
-        private void UpdateBossSpawnChance()
+        private void UpdateBigEnemySpawnChance()
         {
-            if (_bossSpawnChance < MaxSpawnChance)
+            if (_bigEnemySpawnChance < MaxSpawnChance)
             {
-                _bossSpawnChance += Time.deltaTime / ChanceIncreaseInterval;
+                _bigEnemySpawnChance += Time.deltaTime / ChanceIncreaseInterval;
             }
         }
         
@@ -177,6 +187,7 @@ namespace Controllers.Player_Controllers
         {
             if (_howManyLevelsUp <= 0) return;
             _howManyLevelsUp--;
+            
             PauseGame();
             _isGamePaused = true;
             Debug.Log("Level Up! Current Level: " + (_currentLevel - _howManyLevelsUp));
@@ -245,7 +256,7 @@ namespace Controllers.Player_Controllers
         private void PresentUpgradeChoices(UpgradeOption option1, UpgradeOption option2)
         {
             var upgradeOptions = new List<UpgradeOption> { option1, option2 };
-            UIManager.Instance.ShowUpgradePanel(upgradeOptions, OnUpgradeChoiceSelected);
+            InGameUpgradeUI.Instance.ShowUpgradePanel(upgradeOptions, OnUpgradeChoiceSelected);
         }
 
         private void ApplyUpgrade(UpgradeOption upgrade)
@@ -285,13 +296,13 @@ namespace Controllers.Player_Controllers
                     break;
 
                 case UpgradeType.TowerMaxHp:
-                    maxCurrentHealth += 10; // Increase max health by 10
+                    maxCurrentHealth += 10;
                     currentHealth = Mathf.Min(currentHealth + 10, maxCurrentHealth); // Also heal the tower
                     Debug.Log("Increased Tower Max HP! New Tower Max Health: " + maxCurrentHealth);
                     break;
 
                 case UpgradeType.HealthRegenAmount:
-                    _bonusHpRegen += 0.1f; // Increase health regeneration amount by 0.1
+                    _bonusHpRegen += 0.1f;
                     Debug.Log("Increased Health Regeneration! New Bonus HP Regen: " + _bonusHpRegen);
                     break;
                 
@@ -348,7 +359,7 @@ namespace Controllers.Player_Controllers
             ResumeGame();
             _isGamePaused = false;
             
-            UIManager.Instance.HideUpgradePanel();
+            InGameUpgradeUI.Instance.HideUpgradePanel();
         }
         
         private static void PauseGame()
@@ -452,10 +463,20 @@ namespace Controllers.Player_Controllers
             }
         }
 
+        private void EndTheRun()
+        {
+            if (gameTime >= GameEndTime)
+            {
+                Die();
+            }
+        }
+
         private void Die()
         {
-            Destroy(gameObject);
+            totalGold += _playerGold;
+            PlayerPrefs.SetInt("TotalGold", totalGold);
             EnemySpawnManager.Instance.gameObject.SetActive(false);
+            Destroy(gameObject);
         }
     }
 }

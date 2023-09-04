@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44c514499169ff042bcda9ad122d5cb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upgradePanel: {fileID: 6784115347225553179, guid: d470b74501e44bb41990be03ee363bcf,
-    type: 3}
+  upgradePanel: {fileID: 0}
   upgradeButtonPrefab: {fileID: 9054074007690163018, guid: 17e8551f3f6092b459dfc525423416fb,
     type: 3}
+  buttonSpacing: 60

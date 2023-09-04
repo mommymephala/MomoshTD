@@ -15,7 +15,6 @@ namespace Controllers.Enemy_Controllers
         private int _currentHealth;
         private float _nextDamageTime;
         private PlayerController _playerController;
-        private bool _isBoss;
         
         [Header("Coin Values")]
         [SerializeField] private GameObject xpGemPrefab;
@@ -32,8 +31,6 @@ namespace Controllers.Enemy_Controllers
             _currentHealth = enemyData.baseHealth;
             _nextDamageTime = Time.time + enemyData.damageInterval;
             _playerController = FindObjectOfType<PlayerController>();
-            // Check if this enemy is tagged as "Boss"
-            _isBoss = CompareTag("Boss");
         }
 
         private void Update()

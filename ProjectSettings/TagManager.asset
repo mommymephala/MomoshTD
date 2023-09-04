@@ -10,7 +10,9 @@ TagManager:
   - BombWeapon
   - TurretWeapon
   - HealthGem
+  - Big Enemy
   - Boss
+  - GoldText
   layers:
   - Default
   - TransparentFX
