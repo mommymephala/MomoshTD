@@ -7,7 +7,6 @@ namespace Containers
     {
         public UpgradeType type;
         public string description;
-        public int currentLevel;
     }
 
     public enum UpgradeType

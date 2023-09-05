@@ -22,6 +22,7 @@ namespace Controllers.Player_Controllers
         [SerializeField] public List<BaseWeaponController> weaponControllers;
         [SerializeField] private List<BaseWeaponController> weaponPrefabsList;
         [SerializeField] private Transform weaponHolder;
+        [HideInInspector] public PlayerData playerData;
         private int _howManyLevelsUp;
         
         //Time
@@ -83,6 +84,16 @@ namespace Controllers.Player_Controllers
             _bigEnemySpawnChance = InitialSpawnChance;
             _playerGold = 0;
             totalGold = PlayerPrefs.GetInt("TotalGold");
+            // Load saved attribute levels for each upgrade type
+            foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
+            {
+                if (PlayerPrefs.HasKey(upgradeType.ToString()))
+                {
+                    // Load the saved attribute level and update the playerData dictionary
+                    var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
+                    playerData.attributeLevels[upgradeType] = savedLevel;
+                }
+            }
             GenerateXpLevelThresholds();
         }
 
@@ -206,51 +217,52 @@ namespace Controllers.Player_Controllers
             PresentUpgradeChoices(option1, option2);
         }
         
+        [SuppressMessage("ReSharper", "LoopCanBeConvertedToQuery")]
         private List<UpgradeOption> GenerateUpgradeOptions()
         {
-            var options = new List<UpgradeOption>
+            var options = new List<UpgradeOption>();
+
+            foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
             {
-                new UpgradeOption
+                // Skip generating the "Add New Weapon" option here
+                if (upgradeType == UpgradeType.AddNewWeapon)
                 {
-                    type = UpgradeType.WeaponDamage,
-                    description = "Increase Damage"
-                },
-                new UpgradeOption
-                {
-                    type = UpgradeType.ProjectileSpeed,
-                    description = "Increase Projectile Speed"
-                },
-                new UpgradeOption
-                {
-                    type = UpgradeType.TowerMaxHp,
-                    description = "Increase Tower Max HP"
-                },
-                new UpgradeOption
-                {
-                    type = UpgradeType.HealthRegenAmount,
-                    description = "Increase Health Regeneration"
-                },
-                new UpgradeOption
-                {
-                    type = UpgradeType.AoeEffect,
-                    description = "Improve AOE Effect"
-                },
-                new UpgradeOption
-                {
-                    type = UpgradeType.WeaponCooldown,
-                    description = "Reduce Cooldown"
+                    continue;
                 }
-            };
+
+                options.Add(new UpgradeOption
+                {
+                    type = upgradeType,
+                    description = GetUpgradeDescription(upgradeType),
+                });
+            }
+            
             if (CanAttachNewWeapon())
             {
-                options.Add(new UpgradeOption 
-                { 
+                options.Add(new UpgradeOption
+                {
                     type = UpgradeType.AddNewWeapon,
-                    description = "Add New Weapon" 
+                    description = "Add New Weapon"
                 });
             }
 
             return options;
+
+        }
+        
+        private static string GetUpgradeDescription(UpgradeType upgradeType)
+        {
+            return upgradeType switch
+            {
+                UpgradeType.WeaponDamage => "Increase Damage",
+                UpgradeType.ProjectileSpeed => "Increase Projectile Speed",
+                UpgradeType.TowerMaxHp => "Increase Tower Max HP",
+                UpgradeType.HealthRegenAmount => "Increase Health Regeneration",
+                UpgradeType.AoeEffect => "Improve AOE Effect",
+                UpgradeType.WeaponCooldown => "Reduce Cooldown",
+                UpgradeType.AddNewWeapon => "Add New Weapon",
+                _ => ""
+            };
         }
         
         private void PresentUpgradeChoices(UpgradeOption option1, UpgradeOption option2)
@@ -261,69 +273,86 @@ namespace Controllers.Player_Controllers
 
         private void ApplyUpgrade(UpgradeOption upgrade)
         {
-            switch (upgrade.type)
+            // You can access the attribute level using playerData.attributeLevels[upgrade.type]
+            var currentLevel = playerData.attributeLevels[upgrade.type];
+
+            // Check the maximum level for this attribute
+            var maxLevel = playerData.MaxLevelForAttribute(upgrade.type);
+            
+            // Ensure we don't exceed the maximum level
+            if (currentLevel < maxLevel)
             {
-                case UpgradeType.WeaponDamage:
-                var damageModifier = 0.1f * upgrade.currentLevel;
-                foreach (BaseWeaponController weaponController in weaponControllers)
+                // Update the attribute level
+                playerData.attributeLevels[upgrade.type]++;
+
+                switch (upgrade.type)
                 {
-                    upgrade.currentLevel++;
-                    weaponController.damageModifier += damageModifier;
+                    case UpgradeType.WeaponDamage:
+                        // Apply the upgrade using the current level
+                        var damageModifier = 0.1f * currentLevel;
+                        foreach (BaseWeaponController weaponController in weaponControllers)
+                        {
+                            weaponController.damageModifier += damageModifier;
+                        }
+                        Debug.Log($"Upgraded Weapon Damage to level {currentLevel + 1}!");
+                        break;
+
+                    case UpgradeType.ProjectileSpeed:
+                        // Apply the upgrade using the current level
+                        var projectileSpeedModifier = 0.1f * currentLevel;
+                        foreach (BaseWeaponController weaponController in weaponControllers)
+                        {
+                            weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
+                        }
+                        Debug.Log($"Increased Projectile Speed to level {currentLevel + 1}!");
+                        break;
+
+                    case UpgradeType.WeaponCooldown:
+                        // Apply the upgrade using the current level
+                        var cooldownModifier = 0.1f * currentLevel;
+                        foreach (BaseWeaponController weaponController in weaponControllers)
+                        {
+                            weaponController.currentCooldownModifier -= cooldownModifier;
+                        }
+                        Debug.Log($"Reduced Weapon Cooldown to level {currentLevel + 1}!");
+                        break;
+
+                    case UpgradeType.AoeEffect:
+                        // Apply the upgrade using the current level
+                        var aoeModifier = 0.1f * currentLevel;
+                        foreach (BaseWeaponController weaponController in weaponControllers)
+                        {
+                            weaponController.areaModifier += aoeModifier;
+                        }
+                        Debug.Log($"Improved AOE Effect to level {currentLevel + 1}!");
+                        break;
+
+                    case UpgradeType.TowerMaxHp:
+                        // Apply the upgrade using the current level
+                        var maxHpIncrease = 10f * currentLevel;
+                        maxCurrentHealth += maxHpIncrease;
+                        currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
+                        Debug.Log($"Increased Tower Max HP to level {currentLevel + 1}! New Tower Max Health: {maxCurrentHealth}");
+                        break;
+
+                    case UpgradeType.HealthRegenAmount:
+                        // Apply the upgrade using the current level
+                        var hpRegenIncrease = 0.1f * currentLevel;
+                        _bonusHpRegen += hpRegenIncrease;
+                        Debug.Log($"Increased Health Regeneration to level {currentLevel + 1}! New Bonus HP Regen: {_bonusHpRegen}");
+                        break;
+
+                    case UpgradeType.AddNewWeapon:
+                        AttachNewWeapon();
+                        break;
+
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
-                Debug.Log($"Upgraded Weapon Damage to level {upgrade.currentLevel}!");
-                break;
-
-                case UpgradeType.ProjectileSpeed:
-                    var projectileSpeedModifier = 0.1f * upgrade.currentLevel;
-                    foreach (BaseWeaponController weaponController in weaponControllers)
-                    {
-                        upgrade.currentLevel++;
-                        weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
-                    }
-                    Debug.Log($"Increased Projectile Speed to level {upgrade.currentLevel}!");
-                    break;
-
-                case UpgradeType.WeaponCooldown:
-                    var cooldownModifier = 0.1f * upgrade.currentLevel;
-                    foreach (BaseWeaponController weaponController in weaponControllers)
-                    {
-                        upgrade.currentLevel++;
-                        weaponController.currentCooldownModifier -= cooldownModifier;
-                    }
-                    Debug.Log($"Reduced Weapon Cooldown to level {upgrade.currentLevel}!");
-                    break;
-
-                case UpgradeType.AoeEffect:
-                    var aoeModifier = 0.1f * upgrade.currentLevel;
-                    foreach (BaseWeaponController weaponController in weaponControllers)
-                    {
-                        upgrade.currentLevel++;
-                        weaponController.areaModifier += aoeModifier;
-                    }
-                    Debug.Log($"Improved AOE Effect to level {upgrade.currentLevel}!");
-                    break;
-
-                case UpgradeType.TowerMaxHp:
-                    var maxHpIncrease = 10f * upgrade.currentLevel;
-                    upgrade.currentLevel++;
-                    maxCurrentHealth += maxHpIncrease;
-                    currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
-                    Debug.Log($"Increased Tower Max HP to level {upgrade.currentLevel}! New Tower Max Health: {maxCurrentHealth}");
-                    break;
-
-                case UpgradeType.HealthRegenAmount:
-                    upgrade.currentLevel++;
-                    var hpRegenIncrease = 0.1f * upgrade.currentLevel;
-                    _bonusHpRegen += hpRegenIncrease;
-                    Debug.Log($"Increased Health Regeneration to level {upgrade.currentLevel}! New Bonus HP Regen: {_bonusHpRegen}");
-                    break;
-                
-                case UpgradeType.AddNewWeapon:
-                    AttachNewWeapon();
-                    break;
-                        
-                default:
-                    throw new ArgumentOutOfRangeException();
+            }
+            else
+            {
+                Debug.Log($"Cannot upgrade {upgrade.type} beyond level {maxLevel}");
             }
         }
         

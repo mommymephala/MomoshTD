@@ -6,7 +6,7 @@ namespace Controllers.Managers
    public class GetGold : MonoBehaviour
    {
       private TextMeshProUGUI _goldText;
-      private int _totalGold;
+      public int totalGold;
    
       private void Start()
       {
@@ -15,8 +15,8 @@ namespace Controllers.Managers
 
       private void Update()
       {
-         _totalGold = PlayerPrefs.GetInt("TotalGold");
-         _goldText.text = _totalGold.ToString();
+         totalGold = PlayerPrefs.GetInt("TotalGold");
+         _goldText.text = totalGold.ToString();
       }
    }
 }
