@@ -264,46 +264,58 @@ namespace Controllers.Player_Controllers
             switch (upgrade.type)
             {
                 case UpgradeType.WeaponDamage:
-                    foreach (BaseWeaponController weaponController in weaponControllers)
-                    {
-                        weaponController.damageModifier += 0.1f;
-                    }
-                    Debug.Log("Upgraded Weapon Damage!");
-                    break;
+                var damageModifier = 0.1f * upgrade.currentLevel;
+                foreach (BaseWeaponController weaponController in weaponControllers)
+                {
+                    upgrade.currentLevel++;
+                    weaponController.damageModifier += damageModifier;
+                }
+                Debug.Log($"Upgraded Weapon Damage to level {upgrade.currentLevel}!");
+                break;
 
                 case UpgradeType.ProjectileSpeed:
+                    var projectileSpeedModifier = 0.1f * upgrade.currentLevel;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
-                        weaponController.currentProjectileSpeedModifier += 0.1f;
+                        upgrade.currentLevel++;
+                        weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
                     }
-                    Debug.Log("Increased Projectile Speed!");
+                    Debug.Log($"Increased Projectile Speed to level {upgrade.currentLevel}!");
                     break;
 
                 case UpgradeType.WeaponCooldown:
+                    var cooldownModifier = 0.1f * upgrade.currentLevel;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
-                        weaponController.currentCooldownModifier -= 0.1f;
+                        upgrade.currentLevel++;
+                        weaponController.currentCooldownModifier -= cooldownModifier;
                     }
-                    Debug.Log("Reduced Weapon Cooldown!");
+                    Debug.Log($"Reduced Weapon Cooldown to level {upgrade.currentLevel}!");
                     break;
 
                 case UpgradeType.AoeEffect:
+                    var aoeModifier = 0.1f * upgrade.currentLevel;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
-                        weaponController.areaModifier += 0.1f;
+                        upgrade.currentLevel++;
+                        weaponController.areaModifier += aoeModifier;
                     }
-                    Debug.Log("Improved AOE Effect!");
+                    Debug.Log($"Improved AOE Effect to level {upgrade.currentLevel}!");
                     break;
 
                 case UpgradeType.TowerMaxHp:
-                    maxCurrentHealth += 10;
-                    currentHealth = Mathf.Min(currentHealth + 10, maxCurrentHealth); // Also heal the tower
-                    Debug.Log("Increased Tower Max HP! New Tower Max Health: " + maxCurrentHealth);
+                    var maxHpIncrease = 10f * upgrade.currentLevel;
+                    upgrade.currentLevel++;
+                    maxCurrentHealth += maxHpIncrease;
+                    currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
+                    Debug.Log($"Increased Tower Max HP to level {upgrade.currentLevel}! New Tower Max Health: {maxCurrentHealth}");
                     break;
 
                 case UpgradeType.HealthRegenAmount:
-                    _bonusHpRegen += 0.1f;
-                    Debug.Log("Increased Health Regeneration! New Bonus HP Regen: " + _bonusHpRegen);
+                    upgrade.currentLevel++;
+                    var hpRegenIncrease = 0.1f * upgrade.currentLevel;
+                    _bonusHpRegen += hpRegenIncrease;
+                    Debug.Log($"Increased Health Regeneration to level {upgrade.currentLevel}! New Bonus HP Regen: {_bonusHpRegen}");
                     break;
                 
                 case UpgradeType.AddNewWeapon:
