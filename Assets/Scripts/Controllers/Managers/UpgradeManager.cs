@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
-using Containers;
 using TMPro;
+using Containers;
 
 namespace Controllers.Managers
 {
@@ -10,6 +10,19 @@ namespace Controllers.Managers
         [HideInInspector] public PlayerData playerData;
         public GetGold gold;
         public int goldCostPerLevel = 10;
+
+        public TextMeshProUGUI weaponDamageGoldCostText;
+        public TextMeshProUGUI weaponDamageCurrentValueText;
+        public TextMeshProUGUI projectileSpeedGoldCostText;
+        public TextMeshProUGUI projectileSpeedCurrentValueText;
+        public TextMeshProUGUI weaponCooldownGoldCostText;
+        public TextMeshProUGUI weaponCooldownCurrentValueText;
+        public TextMeshProUGUI aoeEffectGoldCostText;
+        public TextMeshProUGUI aoeEffectCurrentValueText;
+        public TextMeshProUGUI towerMaxHpGoldCostText;
+        public TextMeshProUGUI towerMaxHpCurrentValueText;
+        public TextMeshProUGUI healthRegenAmountGoldCostText;
+        public TextMeshProUGUI healthRegenAmountCurrentValueText;
 
         private void Start()
         {
@@ -21,9 +34,43 @@ namespace Controllers.Managers
                     // Load the saved attribute level and update the playerData dictionary
                     var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
                     playerData.attributeLevels[upgradeType] = savedLevel;
+                    UpdateUIElements(upgradeType);
                 }
             }
-            // Initialize your UI elements here if needed
+        }
+
+        private void UpdateUIElements(UpgradeType upgradeType)
+        {
+            var currentLevel = playerData.attributeLevels[upgradeType];
+            var totalGoldCost = goldCostPerLevel * (currentLevel + 1);
+
+            switch (upgradeType)
+            {
+                case UpgradeType.WeaponDamage:
+                    weaponDamageGoldCostText.text = totalGoldCost.ToString();
+                    weaponDamageCurrentValueText.text = currentLevel.ToString();
+                    break;
+                case UpgradeType.ProjectileSpeed:
+                    projectileSpeedGoldCostText.text = totalGoldCost.ToString();
+                    projectileSpeedCurrentValueText.text = currentLevel.ToString();
+                    break;
+                case UpgradeType.WeaponCooldown:
+                    weaponCooldownGoldCostText.text = totalGoldCost.ToString();
+                    weaponCooldownCurrentValueText.text = currentLevel.ToString();
+                    break;
+                case UpgradeType.AoeEffect:
+                    aoeEffectGoldCostText.text = totalGoldCost.ToString();
+                    aoeEffectCurrentValueText.text = currentLevel.ToString();
+                    break;
+                case UpgradeType.TowerMaxHp:
+                    towerMaxHpGoldCostText.text = totalGoldCost.ToString();
+                    towerMaxHpCurrentValueText.text = currentLevel.ToString();
+                    break;
+                case UpgradeType.HealthRegenAmount:
+                    healthRegenAmountGoldCostText.text = totalGoldCost.ToString();
+                    healthRegenAmountCurrentValueText.text = currentLevel.ToString();
+                    break;
+            }
         }
 
         public void UpgradeWeaponDamage()
@@ -55,7 +102,7 @@ namespace Controllers.Managers
         {
             UpgradeAttribute(UpgradeType.HealthRegenAmount);
         }
-        
+
         // Attach this method to the reset button's onClick event in the Unity Editor
         public void ResetAttributes()
         {
@@ -64,12 +111,13 @@ namespace Controllers.Managers
             {
                 playerData.attributeLevels[upgradeType] = 0;
                 PlayerPrefs.SetInt(upgradeType.ToString(), 0); // Reset saved attribute levels as well
+                UpdateUIElements(upgradeType);
             }
 
             // Save the changes
             PlayerPrefs.Save();
         }
-        
+
         public void AddGold(int amount)
         {
             gold.totalGold += amount;
@@ -96,6 +144,7 @@ namespace Controllers.Managers
                 // Save player data (including Gold and attribute levels)
                 PlayerPrefs.SetInt("TotalGold", gold.totalGold);
                 PlayerPrefs.SetInt(upgradeType.ToString(), playerData.attributeLevels[upgradeType]); // Save the attribute level
+                UpdateUIElements(upgradeType);
 
                 PlayerPrefs.Save();
 
