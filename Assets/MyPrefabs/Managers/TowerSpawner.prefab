@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &3221412179839132154
 Transform:
   m_ObjectHideFlags: 0
@@ -45,5 +45,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   towerPrefabs:
-  - {fileID: 4877975804178818029, guid: e764c8f3e024777489f8982a128d78d2, type: 3}
-  - {fileID: 8529469241863597381, guid: a41a343adf183c24b85f52e42e49dd34, type: 3}
+  - {fileID: 4799639054178073550, guid: d8ed464ac0fc2b44d9a3616872b74db8, type: 3}
+  - {fileID: 1912292191617145384, guid: 5a536f3cd9e90574a9c5245d78fd4cfe, type: 3}
