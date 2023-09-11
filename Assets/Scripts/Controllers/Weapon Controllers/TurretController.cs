@@ -10,7 +10,7 @@ namespace Controllers.Weapon_Controllers
             if (TargetEnemy == null)
                 return;
             
-            RotateTurretTowardsEnemy();
+            RotateWeaponTowardsEnemy();
             
             if (weaponData == null) return;
             if (!(AttackTimer >= CurrentCooldown * currentCooldownModifier)) return;

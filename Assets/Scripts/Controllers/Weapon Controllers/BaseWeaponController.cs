@@ -15,7 +15,7 @@ namespace Controllers.Weapon_Controllers
         private Vector3 _targetPosition;
         protected Transform TargetEnemy;
         
-        private Vector3 _turretPosition;
+        private Vector3 _weaponPosition;
         protected Vector3 MuzzleLocation;
         
         protected float AttackTimer;
@@ -36,13 +36,16 @@ namespace Controllers.Weapon_Controllers
         {
         }
         
-        protected void RotateTurretTowardsEnemy()
+        protected void RotateWeaponTowardsEnemy()
         {
-            _turretPosition = towerTransform.position;
+            if (TargetEnemy == null)
+                return;
+            
+            _weaponPosition = towerTransform.position;
             _targetPosition = TargetEnemy.position;
             MuzzleLocation = muzzleTransform.position;
 
-            Quaternion targetRotation = Quaternion.LookRotation(_targetPosition - _turretPosition);
+            Quaternion targetRotation = Quaternion.LookRotation(_targetPosition - _weaponPosition);
             towerTransform.rotation = Quaternion.Slerp(towerTransform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
         
