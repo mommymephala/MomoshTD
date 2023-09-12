@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcdfd0229c85644593de5277c6a1baf, type: 3}
   m_Name: Big Enemy
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2075529667179130034, guid: 24408576c4be9b84aaf6d6524ef83c7d,
+  enemyPrefab: {fileID: 2761235822128240879, guid: 0dfecd87132a25f429add3776fdecd58,
     type: 3}
   baseHealth: 200
   baseDamage: 8

@@ -92,10 +92,10 @@ namespace Controllers.Enemy_Controllers
                 randomSpawnPosition = towerPosition + directionToTower.normalized * minDistanceFromTower;
             }
 
-            if (Physics.OverlapSphere(randomSpawnPosition, 1f, obstacleLayer).Length <= 0)
-            {
-                Instantiate(enemyData.enemyPrefab, randomSpawnPosition, Quaternion.identity);
-            }
+            if (Physics.OverlapSphere(randomSpawnPosition, 1f, obstacleLayer).Length > 0) return;
+            Quaternion rotationToTurret = Quaternion.LookRotation(towerPosition - randomSpawnPosition);
+
+            Instantiate(enemyData.enemyPrefab, randomSpawnPosition, rotationToTurret);
         }
         
         [SuppressMessage("ReSharper", "Unity.PreferNonAllocApi")]

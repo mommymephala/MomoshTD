@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfcdfd0229c85644593de5277c6a1baf, type: 3}
   m_Name: Boss Enemy
   m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 2075529667179130034, guid: 63f492556c6184548a0c4694fe1b2e56,
+  enemyPrefab: {fileID: 2761235822128240879, guid: 819a8c0ca5f02414da6681edb792b047,
     type: 3}
   baseHealth: 300
   baseDamage: 8
