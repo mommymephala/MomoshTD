@@ -40,6 +40,23 @@ namespace Controllers.Weapon_Controllers
         {
             if (TargetEnemy == null)
                 return;
+
+            _weaponPosition = towerTransform.position;
+            _targetPosition = TargetEnemy.position;
+            MuzzleLocation = muzzleTransform.position;
+
+            Vector3 targetDirectionXZ = _targetPosition - _weaponPosition;
+            targetDirectionXZ.y = 0;
+
+            Quaternion targetRotation = Quaternion.LookRotation(targetDirectionXZ);
+
+            towerTransform.rotation = Quaternion.Slerp(towerTransform.rotation, Quaternion.Euler(0, targetRotation.eulerAngles.y, 0), Time.deltaTime * rotationSpeed);
+        }
+        
+        /*protected void RotateWeaponTowardsEnemy()
+        {
+            if (TargetEnemy == null)
+                return;
             
             _weaponPosition = towerTransform.position;
             _targetPosition = TargetEnemy.position;
@@ -47,7 +64,7 @@ namespace Controllers.Weapon_Controllers
 
             Quaternion targetRotation = Quaternion.LookRotation(_targetPosition - _weaponPosition);
             towerTransform.rotation = Quaternion.Slerp(towerTransform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-        }
+        }*/
         
         public void SetTargetEnemy(Transform enemyTransform)
         {

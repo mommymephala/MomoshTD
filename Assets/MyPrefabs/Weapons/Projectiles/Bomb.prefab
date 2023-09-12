@@ -113,7 +113,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 70df4aa72d0be824e9559d61e5db10b2, type: 2}
   towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
-  weaponController: {fileID: 4966442387666248633, guid: 98210b04a087b434aadc8d9227b8357c,
+  weaponController: {fileID: 2052227288582788245, guid: 98210b04a087b434aadc8d9227b8357c,
     type: 3}
   enemyLayer:
     serializedVersion: 2

@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace Controllers.Weapon_Controllers
@@ -13,7 +12,6 @@ namespace Controllers.Weapon_Controllers
             AttackTimer += Time.deltaTime;
             if (TargetEnemy == null)
                 return;
-            
             RotateWeaponTowardsEnemy();
             
             if (weaponData == null) return;
@@ -37,10 +35,5 @@ namespace Controllers.Weapon_Controllers
                 bombRigidbody.velocity = _bombDirection * (CurrentProjectileSpeed * currentProjectileSpeedModifier);
             }
         }
-        
-        /*public void StopFiringAnimation()
-        {
-            bazookaAnimator.SetBool("IsShooting", false);
-        }*/
     }
 }
