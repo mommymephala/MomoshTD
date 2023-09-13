@@ -1,12 +1,15 @@
 using Controllers.Weapon_Controllers;
 using UnityEngine;
 
-public class AnimationHelper : MonoBehaviour
+namespace Containers
 {
-    public BombController bombController;
-
-    public void StartFiringAnimation()
+    public class AnimationHelper : MonoBehaviour
     {
-        bombController.StartFiringAnimation();
+        public BombController bombController;
+
+        public void StartFiringAnimation()
+        {
+            bombController.StartFiringAnimation();
+        }
     }
 }

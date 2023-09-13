@@ -9,6 +9,7 @@ namespace Controllers.Weapon_Controllers
         [SerializeField] private WeaponData weaponData;
         [SerializeField] private TowerData towerData;
         [SerializeField] private BaseWeaponController weaponController;
+        [SerializeField] private TurretController turretController;
         private float _currentDamage;
         
         private void Start()

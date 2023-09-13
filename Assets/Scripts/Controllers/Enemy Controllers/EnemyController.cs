@@ -87,6 +87,8 @@ namespace Controllers.Enemy_Controllers
             {
                 SpawnHealthPickup(transform.position);
             }
+
+            Instantiate(enemyData.enemyDeathVFX, transform.position, Quaternion.identity);
             
             Destroy(gameObject);
         }

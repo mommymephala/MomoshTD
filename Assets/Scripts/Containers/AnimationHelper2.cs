@@ -1,12 +1,14 @@
 using Controllers.Weapon_Controllers;
 using UnityEngine;
 
-public class AnimationHelper2 : MonoBehaviour
+namespace Containers
 {
-    public TurretController turretController;
-
-    public void StartFiring()
+    public class AnimationHelper2 : MonoBehaviour
     {
-        turretController.StartFiring();
+        public TurretController turretController;
+        public void StartFiring()
+        {
+            turretController.StartFiring();
+        }
     }
 }

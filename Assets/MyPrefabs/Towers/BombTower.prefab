@@ -132,6 +132,9 @@ MonoBehaviour:
   pickupLayer:
     serializedVersion: 2
     m_Bits: 512
+  xpPickupFX: {fileID: 124386, guid: a70a24d8868a592499df4cf5b6dbed7d, type: 3}
+  goldPickupFX: {fileID: 143964, guid: 09d9de58ef3bf5444ac94afa0e6013cb, type: 3}
+  healthPickupFX: {fileID: 105942, guid: ff672eaca96d32c419d7a1f1b0346e8d, type: 3}
   weaponControllers:
   - {fileID: 899461200055925317}
   weaponPrefabsList:

@@ -7,6 +7,7 @@ namespace Containers
     {
         //those will be used for base calculations
         public GameObject enemyPrefab;
+        public GameObject enemyDeathVFX;
         public int baseHealth;
         public int baseDamage;
         public int xpGemMinDropAmount;

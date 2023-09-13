@@ -12,6 +12,7 @@ namespace Controllers.Weapon_Controllers
         [SerializeField] private BaseWeaponController weaponController;
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private float explosionDuration = 0.5f;
+        [SerializeField] private GameObject explosionVFX;
         private float _currentDamage;
         private float _currentArea;
 
@@ -28,7 +29,9 @@ namespace Controllers.Weapon_Controllers
             if (_hasExploded || other.CompareTag("Player")) return;
 
             Explode();
+            GameObject vfxClone = Instantiate(explosionVFX, transform.position,Quaternion.identity);
             _hasExploded = true;
+            Destroy(vfxClone, 1.5f);
             Destroy(gameObject, explosionDuration);
         }
 

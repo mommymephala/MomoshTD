@@ -19,6 +19,9 @@ namespace Controllers.Player_Controllers
         [Header("References")]
         [SerializeField] private TowerData towerData;
         [SerializeField] private LayerMask pickupLayer;
+        [SerializeField] private GameObject xpPickupFX;
+        [SerializeField] private GameObject goldPickupFX;
+        [SerializeField] private GameObject healthPickupFX;
         [SerializeField] public List<BaseWeaponController> weaponControllers;
         [SerializeField] private List<BaseWeaponController> weaponPrefabsList;
         [SerializeField] private Transform weaponHolder;
@@ -446,13 +449,17 @@ namespace Controllers.Player_Controllers
 
         private void CollectPickup(GameObject pickup)
         {
+            Vector3 pickupPosition = pickup.transform.position;
+
             if (pickup.CompareTag("XpGem"))
             {
                 var xpGem = pickup.GetComponent<XpGemController>();
                 if (xpGem != null)
                 {
                     var xpAmount = xpGem.GetXpAmount();
+                    GameObject vfx = Instantiate(xpPickupFX, pickupPosition, Quaternion.identity);
                     AddXp(xpAmount);
+                    Destroy(vfx,1.5f);
                 }
             }
 
@@ -462,7 +469,9 @@ namespace Controllers.Player_Controllers
                 if (goldCoin != null)
                 {
                     var goldAmount = GoldCoinController.GetGoldAmount();
+                    GameObject vfx = Instantiate(goldPickupFX, pickupPosition, Quaternion.identity);
                     AddGold(goldAmount);
+                    Destroy(vfx,1.5f);
                 }
             }
 
@@ -472,10 +481,12 @@ namespace Controllers.Player_Controllers
                 if (healthGem != null)
                 {
                     var healAmount = healthGem.GetHealAmount(maxCurrentHealth);
+                    GameObject vfx = Instantiate(healthPickupFX, pickupPosition, Quaternion.identity);
                     Heal(healAmount);
+                    Destroy(vfx,1.5f);
                 }
             }
-            
+
             Destroy(pickup);
         }
 

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 2761235822128240879, guid: 819a8c0ca5f02414da6681edb792b047,
     type: 3}
+  enemyDeathVFX: {fileID: 172590, guid: 93c383a7bb6b65547bc569e7d7f10507, type: 3}
   baseHealth: 300
   baseDamage: 8
   xpGemMinDropAmount: 1
