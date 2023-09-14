@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxDamageScalingTime: 30
-  maxDamageScaleValue: 1.5
+  maxDamageScaleValue: 1.2
   enemyData: {fileID: 11400000, guid: 49a39791e184fbd439186c40039b3948, type: 2}
   xpGemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
     type: 3}

@@ -49,9 +49,9 @@ MonoBehaviour:
   bossData: {fileID: 11400000, guid: 8b2eb3a503e2ea74dac4d8c933b284ee, type: 2}
   towerLocation: {fileID: 0}
   spawnFrequencyMin: 1
-  spawnFrequencyMax: 3
+  spawnFrequencyMax: 2
   minEnemiesPerSpawn: 1
-  maxEnemiesPerSpawn: 3
+  maxEnemiesPerSpawn: 4
   maxEnemiesScalingTime: 60
   spawnRadius: 10
   minDistanceFromTower: 7

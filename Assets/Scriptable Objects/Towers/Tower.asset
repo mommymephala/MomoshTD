@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5895c53905ac414199fae5a4d2d2b34, type: 3}
-  m_Name: Demo Tower
+  m_Name: Tower
   m_EditorClassIdentifier: 
-  baseDmgModifier: 0
-  baseAoeRadiusModifier: 0
-  baseProjectileSpeedModifier: 0
-  baseCooldownModifier: 0
+  baseDmgModifier: 0.1
+  baseAoeRadiusModifier: 0.1
+  baseProjectileSpeedModifier: 0.1
+  baseCooldownModifier: 0.1
   maxHp: 1000
   baseHpRegen: 0.25

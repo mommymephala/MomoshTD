@@ -39,14 +39,15 @@ namespace Controllers.Player_Controllers
         [Header("Events")] 
         public float gameTime;
         private EnemySpawnManager _spawnManager;
-        private const float GameEndTime = 60f;
+        public float gameEndTime = 300f;
         private float _bigEnemySpawnTime;
         private float _bigEnemySpawnChance;
         private const float InitialSpawnChance = 0.2f;
         private const float MaxSpawnChance = 1.0f;
-        private const float ChanceIncreaseInterval = 30f;
+        private const float ChanceIncreaseInterval = 15f;
 
         [Header("UI")] 
+        private HealthBar _healthBar;
         private GameObject _youDiedPanel;
         private GameObject _youWonPanel;
         private TextMeshProUGUI  _gameTimeText;
@@ -54,9 +55,13 @@ namespace Controllers.Player_Controllers
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
         private int _currentLevel = 1;
-        private const int MaxLevel = 100;
+        private const int MaxLevel = 20;
 
         [HideInInspector] public float currentHealth;
+        
+        //UPGRADABLE
+        public float maxCurrentHealth;
+        private float _bonusHpRegen;
         
         private int _playerXp;
         private int _playerGold;
@@ -67,10 +72,6 @@ namespace Controllers.Player_Controllers
         // HP regeneration
         private const float HpRegenInterval = 1.0f;
         private float _nextHpRegenTime;
-        
-        //UPGRADABLE
-        public float maxCurrentHealth;
-        private float _bonusHpRegen;
 
         private void Awake()
         {
@@ -82,6 +83,8 @@ namespace Controllers.Player_Controllers
             
             _youDiedPanel = GameObject.Find("YOU DIED PANEL");
             _youWonPanel = GameObject.Find("YOU WON PANEL");
+
+            _healthBar = FindObjectOfType<HealthBar>();
         }
 
         private void Start()
@@ -89,6 +92,7 @@ namespace Controllers.Player_Controllers
             _youDiedPanel.SetActive(false);
             _youWonPanel.SetActive(false);
             currentHealth = maxCurrentHealth = towerData.maxHp;
+            _healthBar.SetMaxHealth(maxCurrentHealth);
             _nextHpRegenTime = Time.time + HpRegenInterval;
             _bonusHpRegen = towerData.baseHpRegen;
            
@@ -288,73 +292,56 @@ namespace Controllers.Player_Controllers
 
         private void ApplyUpgrade(UpgradeOption upgrade)
         {
-            // You can access the attribute level using playerData.attributeLevels[upgrade.type]
             var currentLevel = playerData.attributeLevels[upgrade.type];
-
-            // Check the maximum level for this attribute
             var maxLevel = playerData.MaxLevelForAttribute(upgrade.type);
             
-            // Ensure we don't exceed the maximum level
             if (currentLevel < maxLevel)
             {
-                // Update the attribute level
                 playerData.attributeLevels[upgrade.type]++;
 
                 switch (upgrade.type)
                 {
                     case UpgradeType.WeaponDamage:
-                        // Apply the upgrade using the current level
-                        var damageModifier = 0.1f * currentLevel;
+                        var damageModifier = 0.2f * currentLevel;
                         foreach (BaseWeaponController weaponController in weaponControllers)
                         {
                             weaponController.damageModifier += damageModifier;
                         }
-                        Debug.Log($"Upgraded Weapon Damage to level {currentLevel + 1}!");
                         break;
 
                     case UpgradeType.ProjectileSpeed:
-                        // Apply the upgrade using the current level
-                        var projectileSpeedModifier = 0.1f * currentLevel;
+                        var projectileSpeedModifier = 0.25f * currentLevel;
                         foreach (BaseWeaponController weaponController in weaponControllers)
                         {
                             weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
                         }
-                        Debug.Log($"Increased Projectile Speed to level {currentLevel + 1}!");
                         break;
 
                     case UpgradeType.WeaponCooldown:
-                        // Apply the upgrade using the current level
                         var cooldownModifier = 0.1f * currentLevel;
                         foreach (BaseWeaponController weaponController in weaponControllers)
                         {
                             weaponController.currentCooldownModifier -= cooldownModifier;
                         }
-                        Debug.Log($"Reduced Weapon Cooldown to level {currentLevel + 1}!");
                         break;
 
                     case UpgradeType.AoeEffect:
-                        // Apply the upgrade using the current level
-                        var aoeModifier = 0.1f * currentLevel;
+                        var aoeModifier = 0.2f * currentLevel;
                         foreach (BaseWeaponController weaponController in weaponControllers)
                         {
                             weaponController.areaModifier += aoeModifier;
                         }
-                        Debug.Log($"Improved AOE Effect to level {currentLevel + 1}!");
                         break;
 
                     case UpgradeType.TowerMaxHp:
-                        // Apply the upgrade using the current level
-                        var maxHpIncrease = 10f * currentLevel;
+                        var maxHpIncrease = 50f * currentLevel;
                         maxCurrentHealth += maxHpIncrease;
                         currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
-                        Debug.Log($"Increased Tower Max HP to level {currentLevel + 1}! New Tower Max Health: {maxCurrentHealth}");
                         break;
 
                     case UpgradeType.HealthRegenAmount:
-                        // Apply the upgrade using the current level
-                        var hpRegenIncrease = 0.1f * currentLevel;
+                        var hpRegenIncrease = 1f * currentLevel;
                         _bonusHpRegen += hpRegenIncrease;
-                        Debug.Log($"Increased Health Regeneration to level {currentLevel + 1}! New Bonus HP Regen: {_bonusHpRegen}");
                         break;
 
                     case UpgradeType.AddNewWeapon:
@@ -364,10 +351,6 @@ namespace Controllers.Player_Controllers
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-            }
-            else
-            {
-                Debug.Log($"Cannot upgrade {upgrade.type} beyond level {maxLevel}");
             }
         }
         
@@ -521,6 +504,7 @@ namespace Controllers.Player_Controllers
         public void TowerTakeDamage(int damageAmount)
         {
             currentHealth -= damageAmount;
+            _healthBar.SetHealth(currentHealth);
             if (currentHealth <= 0)
             {
                 PlayerDie();
@@ -529,7 +513,7 @@ namespace Controllers.Player_Controllers
 
         private void EndTheRun()
         {
-            if (!(gameTime >= GameEndTime)) return;
+            if (!(gameTime >= gameEndTime)) return;
             
             totalGold += _playerGold;
             PlayerPrefs.SetInt("TotalGold", totalGold);
@@ -544,6 +528,7 @@ namespace Controllers.Player_Controllers
             if (_youWonPanel != null)
             {
                 _gameTimeText.gameObject.SetActive(false);
+                _healthBar.gameObject.SetActive(false);
                 _youWonPanel.SetActive(true);
             }
         }
@@ -558,6 +543,7 @@ namespace Controllers.Player_Controllers
             if (_youDiedPanel != null)
             {
                 _gameTimeText.gameObject.SetActive(false);
+                _healthBar.gameObject.SetActive(false);
                 _youDiedPanel.SetActive(true);
             }
             

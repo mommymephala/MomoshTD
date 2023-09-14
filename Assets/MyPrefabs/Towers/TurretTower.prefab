@@ -182,13 +182,14 @@ MonoBehaviour:
   - {fileID: 2052227288582788245, guid: 98210b04a087b434aadc8d9227b8357c, type: 3}
   weaponHolder: {fileID: 4799639053628683179}
   baseXpRequirement: 30
-  xpMultiplierForNextLv: 1.6
+  xpMultiplierForNextLv: 1.35
   collectionRadius: 5
   gameTime: 0
-  youDiedPanel: {fileID: 0}
+  gameEndTime: 300
+  healthBar: {fileID: 0}
   currentHealth: 0
-  totalGold: 0
   maxCurrentHealth: 0
+  totalGold: 0
 --- !u!208 &348131350075880086
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -758,7 +759,7 @@ PrefabInstance:
     - target: {fileID: 927361615373724785, guid: c88fb57993406b14c9f1c9d790d8e398,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.35
+      value: 0.232
       objectReference: {fileID: 0}
     - target: {fileID: 927361615373724785, guid: c88fb57993406b14c9f1c9d790d8e398,
         type: 3}
@@ -768,7 +769,7 @@ PrefabInstance:
     - target: {fileID: 927361615373724785, guid: c88fb57993406b14c9f1c9d790d8e398,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.498
+      value: -0.439
       objectReference: {fileID: 0}
     - target: {fileID: 927361615373724785, guid: c88fb57993406b14c9f1c9d790d8e398,
         type: 3}

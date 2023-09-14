@@ -53,7 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxDamageScalingTime: 30
   maxDamageScaleValue: 1.5
-  enemyData: {fileID: 11400000, guid: 49a39791e184fbd439186c40039b3948, type: 2}
+  enemyData: {fileID: 11400000, guid: 8b2eb3a503e2ea74dac4d8c933b284ee, type: 2}
   xpGemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
     type: 3}
   goldPrefab: {fileID: 3903889357748954759, guid: a78c67939d687964c98b846f6a0281eb,

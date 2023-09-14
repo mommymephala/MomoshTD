@@ -142,13 +142,14 @@ MonoBehaviour:
   - {fileID: 1083259779153351029, guid: c88fb57993406b14c9f1c9d790d8e398, type: 3}
   weaponHolder: {fileID: 1912292191143121485}
   baseXpRequirement: 30
-  xpMultiplierForNextLv: 1.6
+  xpMultiplierForNextLv: 1.35
   collectionRadius: 5
   gameTime: 0
-  youDiedPanel: {fileID: 0}
+  gameEndTime: 300
+  healthBar: {fileID: 0}
   currentHealth: 0
-  totalGold: 0
   maxCurrentHealth: 0
+  totalGold: 0
 --- !u!208 &1540543507907059513
 NavMeshObstacle:
   m_ObjectHideFlags: 0
@@ -225,6 +226,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1912292191143121485}
     m_Modifications:
+    - target: {fileID: 2052227288582788245, guid: 98210b04a087b434aadc8d9227b8357c,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2052227288582788246, guid: 98210b04a087b434aadc8d9227b8357c,
         type: 3}
       propertyPath: m_RootOrder
@@ -233,12 +239,12 @@ PrefabInstance:
     - target: {fileID: 2052227288582788246, guid: 98210b04a087b434aadc8d9227b8357c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.754
+      value: 0.794
       objectReference: {fileID: 0}
     - target: {fileID: 2052227288582788246, guid: 98210b04a087b434aadc8d9227b8357c,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.79999995
+      value: -0.843
       objectReference: {fileID: 0}
     - target: {fileID: 2052227288582788246, guid: 98210b04a087b434aadc8d9227b8357c,
         type: 3}

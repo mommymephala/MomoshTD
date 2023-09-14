@@ -9,7 +9,7 @@ namespace Containers
         public GameObject enemyPrefab;
         public GameObject enemyDeathVFX;
         public int baseHealth;
-        public int baseDamage;
+        public float baseDamage;
         public int xpGemMinDropAmount;
         public int xpGemMaxDropAmount;
         public int goldMinDropAmount;

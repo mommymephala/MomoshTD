@@ -28,8 +28,11 @@ namespace Controllers.Enemy_Controllers
         
         [SerializeField] private LayerMask obstacleLayer;
         private Transform _spawnPoint;
+        
         private float _nextSpawnTime;
+        
         private float _bossSpawnTime;
+        private float _bossSpawnTimer;
         private bool _hasSpawnedBoss;
 
         private void Awake()
@@ -55,11 +58,14 @@ namespace Controllers.Enemy_Controllers
         {
             if (_playerController == null) return;
 
-            if (!_hasSpawnedBoss && _playerController.gameTime >= _bossSpawnTime)
+            if (!_hasSpawnedBoss && _bossSpawnTimer >= _bossSpawnTime && _playerController.gameTime < _playerController.gameEndTime)
             {
                 SpawnBoss();
                 _hasSpawnedBoss = true;
+                _bossSpawnTimer = 0f;
             }
+
+            _bossSpawnTimer += Time.deltaTime;
 
             if (!(_playerController.gameTime >= _nextSpawnTime)) return;
             var numEnemiesToSpawn = CalculateNumEnemiesToSpawn();

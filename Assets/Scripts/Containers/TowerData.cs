@@ -11,7 +11,6 @@ namespace Containers
         public float baseDmgModifier;
         public float baseAoeRadiusModifier;
         public float baseProjectileSpeedModifier;
-        //public float baseAoeDurationModifier;
         public float baseCooldownModifier;
         
         //player values

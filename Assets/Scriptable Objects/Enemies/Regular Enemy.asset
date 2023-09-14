@@ -10,19 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dfcdfd0229c85644593de5277c6a1baf, type: 3}
-  m_Name: Demo Enemy
+  m_Name: Regular Enemy
   m_EditorClassIdentifier: 
   enemyPrefab: {fileID: 2761235822128240879, guid: db59a44578c433f4ca3a530b5914b638,
     type: 3}
   enemyDeathVFX: {fileID: 119968, guid: e73000b12fb76244cbffd6abbf8bb6e4, type: 3}
-  baseHealth: 50
-  baseDamage: 6
+  baseHealth: 100
+  baseDamage: 5
   xpGemMinDropAmount: 1
-  xpGemMaxDropAmount: 3
+  xpGemMaxDropAmount: 2
   goldMinDropAmount: 1
-  goldMaxDropAmount: 2
-  goldDropChance: 0.15
+  goldMaxDropAmount: 1
+  goldDropChance: 0.25
   healthDropChance: 0.1
-  moveSpeed: 3.5
-  damageInterval: 0.5
+  moveSpeed: 2.5
+  damageInterval: 1
   damageRadius: 1.5

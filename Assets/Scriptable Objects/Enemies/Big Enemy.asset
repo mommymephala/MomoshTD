@@ -15,14 +15,14 @@ MonoBehaviour:
   enemyPrefab: {fileID: 2761235822128240879, guid: 0dfecd87132a25f429add3776fdecd58,
     type: 3}
   enemyDeathVFX: {fileID: 133150, guid: 76ea784c73256a744b24cba813a687e3, type: 3}
-  baseHealth: 200
-  baseDamage: 8
+  baseHealth: 250
+  baseDamage: 7.5
   xpGemMinDropAmount: 1
   xpGemMaxDropAmount: 3
   goldMinDropAmount: 1
   goldMaxDropAmount: 2
-  goldDropChance: 1
-  healthDropChance: 0.25
-  moveSpeed: 2
-  damageInterval: 0.5
+  goldDropChance: 0.5
+  healthDropChance: 0.5
+  moveSpeed: 5
+  damageInterval: 1
   damageRadius: 1.5
