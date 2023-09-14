@@ -50,11 +50,11 @@ MonoBehaviour:
   towerLocation: {fileID: 0}
   spawnFrequencyMin: 1
   spawnFrequencyMax: 3
-  minEnemiesPerSpawn: 2
-  maxEnemiesPerSpawn: 6
+  minEnemiesPerSpawn: 1
+  maxEnemiesPerSpawn: 3
   maxEnemiesScalingTime: 60
-  spawnRadius: 18
-  minDistanceFromTower: 10
+  spawnRadius: 10
+  minDistanceFromTower: 7
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 256

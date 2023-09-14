@@ -145,6 +145,7 @@ MonoBehaviour:
   xpMultiplierForNextLv: 1.6
   collectionRadius: 5
   gameTime: 0
+  youDiedPanel: {fileID: 0}
   currentHealth: 0
   totalGold: 0
   maxCurrentHealth: 0

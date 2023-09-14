@@ -29,9 +29,9 @@ namespace Controllers.Weapon_Controllers
             if (_hasExploded || other.CompareTag("Player")) return;
 
             Explode();
-            GameObject vfxClone = Instantiate(explosionVFX, transform.position,Quaternion.identity);
+            GameObject vfx = Instantiate(explosionVFX, transform.position,Quaternion.identity);
             _hasExploded = true;
-            Destroy(vfxClone, 1.5f);
+            Destroy(vfx, 1.5f);
             Destroy(gameObject, explosionDuration);
         }
 

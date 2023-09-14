@@ -77,7 +77,7 @@ namespace Controllers.Enemy_Controllers
             Gizmos.DrawWireSphere(checkPosition, enemyData.damageRadius);
         }
 
-        private void Die()
+        public void Die()
         {
             SpawnCoins(transform.position);
             
@@ -88,8 +88,8 @@ namespace Controllers.Enemy_Controllers
                 SpawnHealthPickup(transform.position);
             }
 
-            Instantiate(enemyData.enemyDeathVFX, transform.position, Quaternion.identity);
-            
+            GameObject vfx = Instantiate(enemyData.enemyDeathVFX, transform.position, Quaternion.identity);
+            Destroy(vfx, 1.5f);
             Destroy(gameObject);
         }
         

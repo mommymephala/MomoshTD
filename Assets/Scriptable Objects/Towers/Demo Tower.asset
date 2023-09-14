@@ -16,5 +16,5 @@ MonoBehaviour:
   baseAoeRadiusModifier: 0
   baseProjectileSpeedModifier: 0
   baseCooldownModifier: 0
-  maxHp: 10000
+  maxHp: 1000
   baseHpRegen: 0.25

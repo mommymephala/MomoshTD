@@ -48,33 +48,33 @@ namespace Controllers.Enemy_Controllers
         {
             _playerController = FindObjectOfType<PlayerController>();
             _spawnPoint = transform;
-            _nextSpawnTime = Time.time + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
-            _bossSpawnTime = 60f;
-            _hasSpawnedBoss = false;
+            ResetSpawnManager();
         }
 
         private void Update()
         {
+            if (_playerController == null) return;
+
             if (!_hasSpawnedBoss && _playerController.gameTime >= _bossSpawnTime)
             {
                 SpawnBoss();
                 _hasSpawnedBoss = true;
             }
-                        
-            if (!(Time.time >= _nextSpawnTime)) return;
+
+            if (!(_playerController.gameTime >= _nextSpawnTime)) return;
             var numEnemiesToSpawn = CalculateNumEnemiesToSpawn();
-            
+
             for (var i = 0; i < numEnemiesToSpawn; i++)
             {
                 SpawnEnemy();
             }
-                        
-            _nextSpawnTime = Time.time + Random.Range(spawnFrequencyMin, spawnFrequencyMax);        
+
+            _nextSpawnTime = _playerController.gameTime + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
         }
 
         private int CalculateNumEnemiesToSpawn()
         {
-            var numEnemies = Mathf.RoundToInt(Mathf.Lerp(minEnemiesPerSpawn, maxEnemiesPerSpawn, Mathf.Clamp01(Time.time / maxEnemiesScalingTime)));
+            var numEnemies = Mathf.RoundToInt(Mathf.Lerp(minEnemiesPerSpawn, maxEnemiesPerSpawn, Mathf.Clamp01(_playerController.gameTime / maxEnemiesScalingTime)));
             return numEnemies;
         }
 
@@ -113,9 +113,10 @@ namespace Controllers.Enemy_Controllers
             }
 
             if (Physics.OverlapSphere(randomSpawnPosition, 1f, obstacleLayer).Length > 0) return;
+            Quaternion rotationToTurret = Quaternion.LookRotation(towerPosition - randomSpawnPosition);
             if (Random.value <= bigEnemySpawnChance)
             {
-                Instantiate(bigEnemyData.enemyPrefab, randomSpawnPosition, Quaternion.identity);
+                Instantiate(bigEnemyData.enemyPrefab, randomSpawnPosition, rotationToTurret);
             }
         }
         
@@ -134,9 +135,17 @@ namespace Controllers.Enemy_Controllers
             }
 
             if (Physics.OverlapSphere(randomSpawnPosition, 1f, obstacleLayer).Length > 0) return;
+            Quaternion rotationToTurret = Quaternion.LookRotation(towerPosition - randomSpawnPosition);
             {
-                Instantiate(bossData.enemyPrefab, randomSpawnPosition, Quaternion.identity);
+                Instantiate(bossData.enemyPrefab, randomSpawnPosition, rotationToTurret);
             }
+        }
+        
+        private void ResetSpawnManager()
+        {
+            _nextSpawnTime = _playerController.gameTime + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
+            _bossSpawnTime = 60f;
+            _hasSpawnedBoss = false;
         }
 
         private void OnDrawGizmos()

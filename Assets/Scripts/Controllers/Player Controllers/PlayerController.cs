@@ -37,17 +37,19 @@ namespace Controllers.Player_Controllers
         [SerializeField] private float collectionRadius;
 
         [Header("Events")] 
-        private EnemySpawnManager _spawnManager;
         public float gameTime;
-        private const float GameEndTime = 600f;
+        private EnemySpawnManager _spawnManager;
+        private const float GameEndTime = 60f;
         private float _bigEnemySpawnTime;
         private float _bigEnemySpawnChance;
         private const float InitialSpawnChance = 0.2f;
         private const float MaxSpawnChance = 1.0f;
         private const float ChanceIncreaseInterval = 30f;
-        
-        [Header("UI")]
-        private TextMeshProUGUI _gameTimeText;
+
+        [Header("UI")] 
+        private GameObject _youDiedPanel;
+        private GameObject _youWonPanel;
+        private TextMeshProUGUI  _gameTimeText;
         
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
@@ -74,29 +76,39 @@ namespace Controllers.Player_Controllers
         {
             _camera = Camera.main;
             _spawnManager = FindObjectOfType<EnemySpawnManager>();
-            _gameTimeText = FindObjectOfType<TextMeshProUGUI>();
+            
+            GameObject gameTimeObject = GameObject.Find("Time Display");
+            _gameTimeText = gameTimeObject.GetComponent<TextMeshProUGUI>();
+            
+            _youDiedPanel = GameObject.Find("YOU DIED PANEL");
+            _youWonPanel = GameObject.Find("YOU WON PANEL");
         }
 
         private void Start()
         {
+            _youDiedPanel.SetActive(false);
+            _youWonPanel.SetActive(false);
             currentHealth = maxCurrentHealth = towerData.maxHp;
             _nextHpRegenTime = Time.time + HpRegenInterval;
             _bonusHpRegen = towerData.baseHpRegen;
+           
             gameTime = 0f;
+            
             _bigEnemySpawnTime = 0f;
             _bigEnemySpawnChance = InitialSpawnChance;
+            
             _playerGold = 0;
             totalGold = PlayerPrefs.GetInt("TotalGold");
-            // Load saved attribute levels for each upgrade type
+            
             foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
             {
                 if (PlayerPrefs.HasKey(upgradeType.ToString()))
                 {
-                    // Load the saved attribute level and update the playerData dictionary
                     var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
                     playerData.attributeLevels[upgradeType] = savedLevel;
                 }
             }
+            
             GenerateXpLevelThresholds();
         }
 
@@ -511,23 +523,44 @@ namespace Controllers.Player_Controllers
             currentHealth -= damageAmount;
             if (currentHealth <= 0)
             {
-                Die();
+                PlayerDie();
             }
         }
 
         private void EndTheRun()
         {
-            if (gameTime >= GameEndTime)
+            if (!(gameTime >= GameEndTime)) return;
+            
+            totalGold += _playerGold;
+            PlayerPrefs.SetInt("TotalGold", totalGold);
+            
+            EnemySpawnManager.Instance.gameObject.SetActive(false);
+            var enemyControllers = FindObjectsOfType<EnemyController>();
+            foreach (EnemyController enemyController in enemyControllers)
             {
-                Die();
+                enemyController.Die();
+            }
+            
+            if (_youWonPanel != null)
+            {
+                _gameTimeText.gameObject.SetActive(false);
+                _youWonPanel.SetActive(true);
             }
         }
 
-        private void Die()
+        private void PlayerDie()
         {
             totalGold += _playerGold;
             PlayerPrefs.SetInt("TotalGold", totalGold);
+            
             EnemySpawnManager.Instance.gameObject.SetActive(false);
+            
+            if (_youDiedPanel != null)
+            {
+                _gameTimeText.gameObject.SetActive(false);
+                _youDiedPanel.SetActive(true);
+            }
+            
             Destroy(gameObject);
         }
     }

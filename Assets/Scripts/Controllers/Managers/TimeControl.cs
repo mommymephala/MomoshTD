@@ -25,7 +25,7 @@ namespace Controllers.Managers
 
         private void Start()
         {
-            UpdateButtonText();
+            ResetTimeScale();
         }
 
         public void ToggleTime()
@@ -39,6 +39,13 @@ namespace Controllers.Managers
         private void UpdateButtonText()
         {
             buttonText.text = "Time x" + _timeScales[_timeScaleIndex];
+        }
+
+        private void ResetTimeScale()
+        {
+            Time.timeScale = 1.0f;
+            _timeScaleIndex = 0;
+            UpdateButtonText();
         }
     }
 }
