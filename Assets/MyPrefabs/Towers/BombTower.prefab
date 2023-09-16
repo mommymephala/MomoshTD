@@ -146,10 +146,8 @@ MonoBehaviour:
   collectionRadius: 5
   gameTime: 0
   gameEndTime: 300
-  healthBar: {fileID: 0}
   currentHealth: 0
   maxCurrentHealth: 0
-  totalGold: 0
 --- !u!208 &1540543507907059513
 NavMeshObstacle:
   m_ObjectHideFlags: 0

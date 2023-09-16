@@ -30,6 +30,7 @@ namespace Controllers.Player_Controllers
         
         //Time
         private bool _isGamePaused;
+        private bool _hasEndedTheRun;
         
         [Header("XP Calculation")]
         [SerializeField] private float baseXpRequirement;
@@ -39,7 +40,7 @@ namespace Controllers.Player_Controllers
         [Header("Events")] 
         public float gameTime;
         private EnemySpawnManager _spawnManager;
-        public float gameEndTime = 300f;
+        [HideInInspector] public float gameEndTime = 300f;
         private float _bigEnemySpawnTime;
         private float _bigEnemySpawnChance;
         private const float InitialSpawnChance = 0.2f;
@@ -51,6 +52,7 @@ namespace Controllers.Player_Controllers
         private GameObject _youDiedPanel;
         private GameObject _youWonPanel;
         private TextMeshProUGUI  _gameTimeText;
+        private TextMeshProUGUI _currentGoldText;
         
         //xp/level containers
         private readonly List<int> _xpLevelThresholds = new List<int>();
@@ -65,7 +67,7 @@ namespace Controllers.Player_Controllers
         
         private int _playerXp;
         private int _playerGold;
-        public int totalGold;
+        //public int totalGold;
         
         private Camera _camera;
 
@@ -85,6 +87,9 @@ namespace Controllers.Player_Controllers
             _youWonPanel = GameObject.Find("YOU WON PANEL");
 
             _healthBar = FindObjectOfType<HealthBar>();
+
+            GameObject currentGoldObject = GameObject.Find("CurrentGold");
+            _currentGoldText = currentGoldObject.GetComponent<TextMeshProUGUI>();
         }
 
         private void Start()
@@ -100,9 +105,9 @@ namespace Controllers.Player_Controllers
             
             _bigEnemySpawnTime = 0f;
             _bigEnemySpawnChance = InitialSpawnChance;
-            
+
             _playerGold = 0;
-            totalGold = PlayerPrefs.GetInt("TotalGold");
+            _currentGoldText.text = _playerGold.ToString();
             
             foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
             {
@@ -124,7 +129,6 @@ namespace Controllers.Player_Controllers
             }
 
             gameTime += Time.deltaTime;
-            
             EndTheRun();
             
             UpdateGameTimeText();
@@ -220,7 +224,6 @@ namespace Controllers.Player_Controllers
             
             PauseGame();
             _isGamePaused = true;
-            Debug.Log("Level Up! Current Level: " + (_currentLevel - _howManyLevelsUp));
 
             var upgradeOptions = GenerateUpgradeOptions();
 
@@ -292,6 +295,7 @@ namespace Controllers.Player_Controllers
 
         private void ApplyUpgrade(UpgradeOption upgrade)
         {
+            //TODO: Better Balance
             var currentLevel = playerData.attributeLevels[upgrade.type];
             var maxLevel = playerData.MaxLevelForAttribute(upgrade.type);
             
@@ -464,6 +468,7 @@ namespace Controllers.Player_Controllers
                 if (goldCoin != null)
                 {
                     var goldAmount = GoldCoinController.GetGoldAmount();
+                    _currentGoldText.text = _playerGold.ToString();
                     GameObject vfx = Instantiate(goldPickupFX, pickupPosition, Quaternion.identity);
                     AddGold(goldAmount);
                     Destroy(vfx,1.5f);
@@ -488,7 +493,6 @@ namespace Controllers.Player_Controllers
         private void Heal(int healAmount)
         {
             currentHealth = Mathf.Min(currentHealth + healAmount, maxCurrentHealth);
-            Debug.Log("Player healed for " + healAmount + " HP. Current HP: " + currentHealth);
         }
 
         private void AddXp(int xpAmount)
@@ -513,41 +517,50 @@ namespace Controllers.Player_Controllers
 
         private void EndTheRun()
         {
-            if (!(gameTime >= gameEndTime)) return;
-            
-            totalGold += _playerGold;
-            PlayerPrefs.SetInt("TotalGold", totalGold);
-            
+            if (!(gameTime >= gameEndTime) || _hasEndedTheRun) return;
+
+            var currentTotalGold = PlayerPrefs.GetInt("TotalGold", 0);
+            currentTotalGold += _playerGold - 1;
+            PlayerPrefs.SetInt("TotalGold", currentTotalGold);
+
+            Debug.Log("End of run. Added " + (_playerGold - 1) + " gold to totalGold. Total Gold: " + currentTotalGold);
+
             EnemySpawnManager.Instance.gameObject.SetActive(false);
             var enemyControllers = FindObjectsOfType<EnemyController>();
             foreach (EnemyController enemyController in enemyControllers)
             {
                 enemyController.Die();
             }
-            
+
             if (_youWonPanel != null)
             {
                 _gameTimeText.gameObject.SetActive(false);
                 _healthBar.gameObject.SetActive(false);
                 _youWonPanel.SetActive(true);
             }
+
+            _hasEndedTheRun = true;
+            gameObject.SetActive(false);
         }
 
         private void PlayerDie()
         {
-            totalGold += _playerGold;
-            PlayerPrefs.SetInt("TotalGold", totalGold);
-            
+            var currentTotalGold = PlayerPrefs.GetInt("TotalGold", 0);
+            currentTotalGold += _playerGold - 1;
+            PlayerPrefs.SetInt("TotalGold", currentTotalGold);
+
+            Debug.Log("Player died. Added " + (_playerGold - 1) + " gold to totalGold. Total Gold: " + currentTotalGold);
+
             EnemySpawnManager.Instance.gameObject.SetActive(false);
-            
+
             if (_youDiedPanel != null)
             {
                 _gameTimeText.gameObject.SetActive(false);
                 _healthBar.gameObject.SetActive(false);
                 _youDiedPanel.SetActive(true);
             }
-            
-            Destroy(gameObject);
+
+            gameObject.SetActive(false);
         }
     }
 }

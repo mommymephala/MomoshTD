@@ -77,12 +77,18 @@ namespace Controllers.Player_Controllers
             {
                 var enemyController = enemyCollider.GetComponentInParent<EnemyController>();
                 if (enemyController == null) continue;
-                var distanceToEnemy = Vector3.Distance(transform.position, enemyController.transform.position);
-                if (!(distanceToEnemy < closestDistance)) continue;
-                closestDistance = distanceToEnemy;
-                closestEnemy = enemyController;
-            }
 
+                // Check if the enemyController's GameObject is still active
+                if (!enemyController.gameObject.activeSelf) continue;
+
+                var distanceToEnemy = Vector3.Distance(transform.position, enemyController.transform.position);
+                if (distanceToEnemy < closestDistance)
+                {
+                    closestDistance = distanceToEnemy;
+                    closestEnemy = enemyController;
+                }
+            }
+            
             return closestEnemy;
         }
     }
