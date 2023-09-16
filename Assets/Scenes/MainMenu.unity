@@ -1632,7 +1632,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &518847120
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2896,7 +2896,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &905918113
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7543,6 +7543,9 @@ MonoBehaviour:
   towerMaxHpCurrentValueText: {fileID: 1250877523}
   healthRegenAmountGoldCostText: {fileID: 2149824654370291432}
   healthRegenAmountCurrentValueText: {fileID: 1047406385}
+  weaponControllers:
+  - {fileID: 2052227288582788245, guid: 98210b04a087b434aadc8d9227b8357c, type: 3}
+  - {fileID: 1083259779153351029, guid: c88fb57993406b14c9f1c9d790d8e398, type: 3}
 --- !u!4 &2149824655207822327
 Transform:
   m_ObjectHideFlags: 0

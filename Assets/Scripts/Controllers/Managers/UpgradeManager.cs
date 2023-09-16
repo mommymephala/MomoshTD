@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using Containers;
+using Controllers.Weapon_Controllers;
 
 namespace Controllers.Managers
 {
@@ -19,28 +21,28 @@ namespace Controllers.Managers
         public TextMeshProUGUI weaponCooldownCurrentValueText;
         public TextMeshProUGUI aoeEffectGoldCostText;
         public TextMeshProUGUI aoeEffectCurrentValueText;
-        public TextMeshProUGUI towerMaxHpGoldCostText;
-        public TextMeshProUGUI towerMaxHpCurrentValueText;
-        public TextMeshProUGUI healthRegenAmountGoldCostText;
-        public TextMeshProUGUI healthRegenAmountCurrentValueText;
+        // public TextMeshProUGUI towerMaxHpGoldCostText;
+        // public TextMeshProUGUI towerMaxHpCurrentValueText;
+        // public TextMeshProUGUI healthRegenAmountGoldCostText;
+        // public TextMeshProUGUI healthRegenAmountCurrentValueText;
+        
+        public List<BaseWeaponController> weaponControllers;
 
         private void Start()
         {
             foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
             {
-                if (PlayerPrefs.HasKey(upgradeType.ToString()))
-                {
-                    var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
-                    playerData.attributeLevels[upgradeType] = savedLevel;
-                    UpdateUIElements(upgradeType);
-                }
+                var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
+                playerData.attributeLevels[upgradeType] = savedLevel;
+
+                UpdateUIElements(upgradeType);
             }
         }
 
         private void UpdateUIElements(UpgradeType upgradeType)
         {
             var currentLevel = playerData.attributeLevels[upgradeType];
-            var totalGoldCost = goldCostPerLevel * (currentLevel + 1);
+            var totalGoldCost = Mathf.RoundToInt(goldCostPerLevel * Mathf.Pow(2f, currentLevel));
 
             switch (upgradeType)
             {
@@ -60,14 +62,14 @@ namespace Controllers.Managers
                     aoeEffectGoldCostText.text = totalGoldCost.ToString();
                     aoeEffectCurrentValueText.text = currentLevel.ToString();
                     break;
-                case UpgradeType.TowerMaxHp:
-                    towerMaxHpGoldCostText.text = totalGoldCost.ToString();
-                    towerMaxHpCurrentValueText.text = currentLevel.ToString();
-                    break;
-                case UpgradeType.HealthRegenAmount:
-                    healthRegenAmountGoldCostText.text = totalGoldCost.ToString();
-                    healthRegenAmountCurrentValueText.text = currentLevel.ToString();
-                    break;
+                // case UpgradeType.TowerMaxHp:
+                //     towerMaxHpGoldCostText.text = totalGoldCost.ToString();
+                //     towerMaxHpCurrentValueText.text = currentLevel.ToString();
+                //     break;
+                // case UpgradeType.HealthRegenAmount:
+                //     healthRegenAmountGoldCostText.text = totalGoldCost.ToString();
+                //     healthRegenAmountCurrentValueText.text = currentLevel.ToString();
+                //     break;
             }
         }
 
@@ -91,15 +93,15 @@ namespace Controllers.Managers
             UpgradeAttribute(UpgradeType.AoeEffect);
         }
 
-        public void UpgradeTowerMaxHp()
-        {
-            UpgradeAttribute(UpgradeType.TowerMaxHp);
-        }
-
-        public void UpgradeHealthRegenAmount()
-        {
-            UpgradeAttribute(UpgradeType.HealthRegenAmount);
-        }
+        // public void UpgradeTowerMaxHp()
+        // {
+        //     UpgradeAttribute(UpgradeType.TowerMaxHp);
+        // }
+        //
+        // public void UpgradeHealthRegenAmount()
+        // {
+        //     UpgradeAttribute(UpgradeType.HealthRegenAmount);
+        // }
 
         public void ResetAttributes()
         {
@@ -123,22 +125,70 @@ namespace Controllers.Managers
 
         private void UpgradeAttribute(UpgradeType upgradeType)
         {
-            //TODO: Fix Upgrades
             var currentLevel = playerData.attributeLevels[upgradeType];
-            var totalGoldCost = goldCostPerLevel * (currentLevel + 1);
+            var totalGoldCost = Mathf.RoundToInt(goldCostPerLevel * Mathf.Pow(2f, currentLevel));
 
-            if (gold.totalGold >= totalGoldCost && currentLevel < playerData.MaxLevelForAttribute(upgradeType) && currentLevel < playerData.MaxPermanentLevel)
+            if (gold.totalGold < totalGoldCost || currentLevel >= playerData.MaxPermanentLevel) return;
+            
+            gold.totalGold -= totalGoldCost;
+            playerData.attributeLevels[upgradeType]++;
+
+            PlayerPrefs.SetInt("TotalGold", gold.totalGold);
+            PlayerPrefs.SetInt(upgradeType.ToString(), playerData.attributeLevels[upgradeType]);
+
+            switch (upgradeType)
             {
-                gold.totalGold -= totalGoldCost;
+                case UpgradeType.WeaponDamage:
+                    var damageModifier = (currentLevel + 1) * 0.2f;
+                    
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.damageModifier += damageModifier;
+                    }
 
-                playerData.attributeLevels[upgradeType]++;
+                    Debug.Log("Weapon Damage Modifier Increased by: " + damageModifier);
+                    break;
 
-                PlayerPrefs.SetInt("TotalGold", gold.totalGold);
-                PlayerPrefs.SetInt(upgradeType.ToString(), playerData.attributeLevels[upgradeType]);
-                UpdateUIElements(upgradeType);
+                case UpgradeType.ProjectileSpeed:
+                    var projectileSpeedModifier = (currentLevel + 1) * 0.25f;
 
-                PlayerPrefs.Save();
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
+                    }
+
+                    Debug.Log("Projectile Speed Modifier Increased by: " + projectileSpeedModifier);
+                    break;
+
+                case UpgradeType.WeaponCooldown:
+                    var cooldownModifier = (currentLevel + 1) * 0.1f;
+
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.currentCooldownModifier -= cooldownModifier;
+                    }
+
+                    Debug.Log("Weapon Cooldown Modifier Decreased by: " + cooldownModifier);
+                    break;
+
+                case UpgradeType.AoeEffect:
+                    var aoeModifier = (currentLevel + 1) * 0.2f;
+
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.areaModifier += aoeModifier;
+                    }
+
+                    Debug.Log("AOE Effect Modifier Increased by: " + aoeModifier);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
+                    
+            UpdateUIElements(upgradeType);
+
+            PlayerPrefs.Save();
         }
     }
 }

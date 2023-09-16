@@ -227,7 +227,6 @@ namespace Controllers.Player_Controllers
 
             var upgradeOptions = GenerateUpgradeOptions();
 
-            // Randomly select two upgrade options
             var optionIndex1 = Random.Range(0, upgradeOptions.Count);
             var optionIndex2 = Random.Range(0, upgradeOptions.Count - 1);
             if (optionIndex2 >= optionIndex1)
@@ -252,13 +251,19 @@ namespace Controllers.Player_Controllers
                     continue;
                 }
 
-                options.Add(new UpgradeOption
+                var currentLevel = playerData.attributeLevels[upgradeType];
+        
+                // Check if the current level is less than 10 before adding the upgrade option
+                if (currentLevel < 10)
                 {
-                    type = upgradeType,
-                    description = GetUpgradeDescription(upgradeType),
-                });
+                    options.Add(new UpgradeOption
+                    {
+                        type = upgradeType,
+                        description = GetUpgradeDescription(upgradeType),
+                    });
+                }
             }
-            
+    
             if (CanAttachNewWeapon())
             {
                 options.Add(new UpgradeOption
@@ -269,7 +274,6 @@ namespace Controllers.Player_Controllers
             }
 
             return options;
-
         }
         
         private static string GetUpgradeDescription(UpgradeType upgradeType)
@@ -278,8 +282,8 @@ namespace Controllers.Player_Controllers
             {
                 UpgradeType.WeaponDamage => "Increase Damage",
                 UpgradeType.ProjectileSpeed => "Increase Projectile Speed",
-                UpgradeType.TowerMaxHp => "Increase Tower Max HP",
-                UpgradeType.HealthRegenAmount => "Increase Health Regeneration",
+                // UpgradeType.TowerMaxHp => "Increase Tower Max HP",
+                // UpgradeType.HealthRegenAmount => "Increase Health Regeneration",
                 UpgradeType.AoeEffect => "Improve AOE Effect",
                 UpgradeType.WeaponCooldown => "Reduce Cooldown",
                 UpgradeType.AddNewWeapon => "Add New Weapon",
@@ -298,63 +302,63 @@ namespace Controllers.Player_Controllers
             //TODO: Better Balance
             var currentLevel = playerData.attributeLevels[upgrade.type];
             var maxLevel = playerData.MaxLevelForAttribute(upgrade.type);
+
+            if (currentLevel >= maxLevel) return;
+            playerData.attributeLevels[upgrade.type]++;
             
-            if (currentLevel < maxLevel)
+            Debug.Log("Upgraded " + upgrade.type + " to Level " + playerData.attributeLevels[upgrade.type]);
+
+            switch (upgrade.type)
             {
-                playerData.attributeLevels[upgrade.type]++;
+                case UpgradeType.WeaponDamage:
+                    var damageModifier = 0.2f * currentLevel;
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.damageModifier += damageModifier;
+                    }
+                    break;
 
-                switch (upgrade.type)
-                {
-                    case UpgradeType.WeaponDamage:
-                        var damageModifier = 0.2f * currentLevel;
-                        foreach (BaseWeaponController weaponController in weaponControllers)
-                        {
-                            weaponController.damageModifier += damageModifier;
-                        }
-                        break;
+                case UpgradeType.ProjectileSpeed:
+                    var projectileSpeedModifier = 0.25f * currentLevel;
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
+                    }
+                    break;
 
-                    case UpgradeType.ProjectileSpeed:
-                        var projectileSpeedModifier = 0.25f * currentLevel;
-                        foreach (BaseWeaponController weaponController in weaponControllers)
-                        {
-                            weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
-                        }
-                        break;
+                case UpgradeType.WeaponCooldown:
+                    var cooldownModifier = 0.1f * currentLevel;
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.currentCooldownModifier -= cooldownModifier;
+                    }
+                    break;
 
-                    case UpgradeType.WeaponCooldown:
-                        var cooldownModifier = 0.1f * currentLevel;
-                        foreach (BaseWeaponController weaponController in weaponControllers)
-                        {
-                            weaponController.currentCooldownModifier -= cooldownModifier;
-                        }
-                        break;
+                case UpgradeType.AoeEffect:
+                    var aoeModifier = 0.2f * currentLevel;
+                    foreach (BaseWeaponController weaponController in weaponControllers)
+                    {
+                        weaponController.areaModifier += aoeModifier;
+                    }
+                    break;
 
-                    case UpgradeType.AoeEffect:
-                        var aoeModifier = 0.2f * currentLevel;
-                        foreach (BaseWeaponController weaponController in weaponControllers)
-                        {
-                            weaponController.areaModifier += aoeModifier;
-                        }
-                        break;
+                // case UpgradeType.TowerMaxHp:
+                //     var maxHpIncrease = 50f * currentLevel;
+                //     maxCurrentHealth += maxHpIncrease;
+                //     currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
+                //     break;
+                //
+                // case UpgradeType.HealthRegenAmount:
+                //     var hpRegenIncrease = 1f * currentLevel;
+                //     _bonusHpRegen += hpRegenIncrease;
+                //     break;
 
-                    case UpgradeType.TowerMaxHp:
-                        var maxHpIncrease = 50f * currentLevel;
-                        maxCurrentHealth += maxHpIncrease;
-                        currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
-                        break;
+                case UpgradeType.AddNewWeapon:
+                    AttachNewWeapon();
+                    break;
 
-                    case UpgradeType.HealthRegenAmount:
-                        var hpRegenIncrease = 1f * currentLevel;
-                        _bonusHpRegen += hpRegenIncrease;
-                        break;
-
-                    case UpgradeType.AddNewWeapon:
-                        AttachNewWeapon();
-                        break;
-
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
         

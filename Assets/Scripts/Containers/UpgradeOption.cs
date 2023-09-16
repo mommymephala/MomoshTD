@@ -15,8 +15,8 @@ namespace Containers
         ProjectileSpeed,
         WeaponCooldown,
         AoeEffect,
-        TowerMaxHp,
-        HealthRegenAmount,
+        // TowerMaxHp,
+        // HealthRegenAmount,
         AddNewWeapon
     }
 }
