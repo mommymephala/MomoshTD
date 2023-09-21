@@ -62,10 +62,8 @@ namespace Controllers.Enemy_Controllers
 
         private bool IsCollidingWithTower()
         {
-            // Calculate the position where you want to check for collision (e.g., the center of the enemy)
             Vector3 checkPosition = transform.position;
             
-            // Check if there are any colliders within the specified radius that belong to the Tower layer
             var isColliding = Physics.CheckSphere(checkPosition, enemyData.damageRadius, LayerMask.GetMask("Player"));
             return isColliding;
         }
@@ -113,7 +111,6 @@ namespace Controllers.Enemy_Controllers
 
         private void SpawnCoins(Vector3 spawnPosition)
         {
-            // Instantiate xp coins based on randomized amount and drop chance
             var randomXpGemAmount = Random.Range(enemyData.xpGemMinDropAmount, enemyData.xpGemMaxDropAmount + 1);
             for (var i = 0; i < randomXpGemAmount; i++)
             {
@@ -121,7 +118,6 @@ namespace Controllers.Enemy_Controllers
                 Instantiate(xpGemPrefab, xpGemSpawnPosition, Quaternion.identity);
             }
             
-            // Instantiate gold coins based on randomized amount and drop chance
             if (!(Random.value <= enemyData.goldDropChance)) return;
             {
                 var randomGoldAmount = Random.Range(enemyData.goldMinDropAmount, enemyData.goldMaxDropAmount + 1);

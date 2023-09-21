@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   projectilePrefab: {fileID: 6816919501976119307, guid: 4bbbbfa9e9b8dcf41ae2c8efbffc34ea,
     type: 3}
-  baseDamage: 60
-  baseProjectileSpeed: 100
+  baseDamage: 25
+  baseProjectileSpeed: 35
   baseCooldown: 0.05
   baseAoeRadius: 1

@@ -67,22 +67,21 @@ namespace Controllers.Player_Controllers
         
         private int _playerXp;
         private int _playerGold;
-        //public int totalGold;
-        
-        private Camera _camera;
 
         // HP regeneration
         private const float HpRegenInterval = 1.0f;
         private float _nextHpRegenTime;
+        
+        private Camera _camera;
 
         private void Awake()
         {
             _camera = Camera.main;
             _spawnManager = FindObjectOfType<EnemySpawnManager>();
-            
+
             GameObject gameTimeObject = GameObject.Find("Time Display");
             _gameTimeText = gameTimeObject.GetComponent<TextMeshProUGUI>();
-            
+
             _youDiedPanel = GameObject.Find("YOU DIED PANEL");
             _youWonPanel = GameObject.Find("YOU WON PANEL");
 
@@ -90,6 +89,9 @@ namespace Controllers.Player_Controllers
 
             GameObject currentGoldObject = GameObject.Find("CurrentGold");
             _currentGoldText = currentGoldObject.GetComponent<TextMeshProUGUI>();
+
+            playerData = new PlayerData();
+            playerData.Initialize();
         }
 
         private void Start()
@@ -100,21 +102,28 @@ namespace Controllers.Player_Controllers
             _healthBar.SetMaxHealth(maxCurrentHealth);
             _nextHpRegenTime = Time.time + HpRegenInterval;
             _bonusHpRegen = towerData.baseHpRegen;
-           
+
             gameTime = 0f;
-            
+
             _bigEnemySpawnTime = 0f;
             _bigEnemySpawnChance = InitialSpawnChance;
 
             _playerGold = 0;
             _currentGoldText.text = _playerGold.ToString();
-            
+
             foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
             {
-                if (PlayerPrefs.HasKey(upgradeType.ToString()))
+                if (upgradeType != UpgradeType.AddNewWeapon && PlayerPrefs.HasKey(upgradeType.ToString()))
                 {
                     var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
-                    playerData.attributeLevels[upgradeType] = savedLevel;
+
+                    // Check if the saved level is greater than 0, then subtract 1 level
+                    if (savedLevel > 0)
+                    {
+                        savedLevel--;
+                        playerData.attributeLevels[upgradeType] = savedLevel;
+                        ApplyUpgradeAtStart(upgradeType, weaponControllers[0]); // Apply upgrades based on saved levels
+                    }
                 }
             }
             
@@ -297,64 +306,130 @@ namespace Controllers.Player_Controllers
             InGameUpgradeUI.Instance.ShowUpgradePanel(upgradeOptions, OnUpgradeChoiceSelected);
         }
 
-        private void ApplyUpgrade(UpgradeOption upgrade)
+        // Apply attribute upgrades
+        private void ApplyUpgrade(UpgradeType upgradeType)
         {
-            //TODO: Better Balance
-            var currentLevel = playerData.attributeLevels[upgrade.type];
-            var maxLevel = playerData.MaxLevelForAttribute(upgrade.type);
-
-            if (currentLevel >= maxLevel) return;
-            playerData.attributeLevels[upgrade.type]++;
+            // Retrieve the current level from player data
+            var currentLevel = playerData.attributeLevels[upgradeType];
             
-            Debug.Log("Upgraded " + upgrade.type + " to Level " + playerData.attributeLevels[upgrade.type]);
+            // Determine the maximum level allowed for this upgrade
+            var maxLevel = playerData.MaxLevelForAttribute(upgradeType);
 
-            switch (upgrade.type)
+            // Check if the current level is already at the maximum
+            if (currentLevel >= maxLevel)
+            {
+                Debug.Log(upgradeType + " is already at max level (" + currentLevel + ")");
+                return;
+            }
+
+            // Increment the upgrade level
+            playerData.attributeLevels[upgradeType]++;
+
+            // Log the upgrade
+            Debug.Log("Upgraded " + upgradeType + " to Level " + playerData.attributeLevels[upgradeType]);
+
+            // Now apply the upgrade based on the new level
+            switch (upgradeType)
             {
                 case UpgradeType.WeaponDamage:
-                    var damageModifier = 0.2f * currentLevel;
+                    // Example: Increase weapon damage by 20% per level
+                    var damageModifier = 0.2f;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
                         weaponController.damageModifier += damageModifier;
                     }
+                    Debug.Log("Weapon Damage Modifier Increased by: " + damageModifier);
                     break;
 
                 case UpgradeType.ProjectileSpeed:
-                    var projectileSpeedModifier = 0.25f * currentLevel;
+                    // Example: Increase projectile speed by 10% per level
+                    var speedModifier = 0.1f;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
-                        weaponController.currentProjectileSpeedModifier += projectileSpeedModifier;
+                        weaponController.currentProjectileSpeedModifier += speedModifier;
                     }
+                    Debug.Log("Projectile Speed Modifier Increased by: " + speedModifier);
                     break;
 
                 case UpgradeType.WeaponCooldown:
-                    var cooldownModifier = 0.1f * currentLevel;
+                    // Example: Decrease weapon cooldown by 10% per level
+                    var cooldownModifier = 0.1f;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
                         weaponController.currentCooldownModifier -= cooldownModifier;
                     }
+                    Debug.Log("Weapon Cooldown Modifier Decreased by: " + cooldownModifier);
                     break;
 
                 case UpgradeType.AoeEffect:
-                    var aoeModifier = 0.2f * currentLevel;
+                    // Example: Increase AOE effect by 20% per level
+                    var aoeModifier = 0.2f;
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
                         weaponController.areaModifier += aoeModifier;
                     }
+                    Debug.Log("AOE Effect Modifier Increased by: " + aoeModifier);
                     break;
-
-                // case UpgradeType.TowerMaxHp:
-                //     var maxHpIncrease = 50f * currentLevel;
-                //     maxCurrentHealth += maxHpIncrease;
-                //     currentHealth = Mathf.Min(currentHealth + maxHpIncrease, maxCurrentHealth);
-                //     break;
-                //
-                // case UpgradeType.HealthRegenAmount:
-                //     var hpRegenIncrease = 1f * currentLevel;
-                //     _bonusHpRegen += hpRegenIncrease;
-                //     break;
 
                 case UpgradeType.AddNewWeapon:
                     AttachNewWeapon();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        private void ApplyUpgradeAtStart(UpgradeType upgradeType, BaseWeaponController weaponController)
+        {
+            // Retrieve the current level from player data
+            var currentLevel = playerData.attributeLevels[upgradeType] + 1;
+
+            // Determine the maximum level allowed for this upgrade
+            var maxLevel = playerData.MaxLevelForAttribute(upgradeType);
+
+            // Check if the current level is already at the maximum
+            if (currentLevel >= maxLevel)
+            {
+                Debug.Log(upgradeType + " is already at max level (" + currentLevel + ")");
+                return;
+            }
+
+            // Increment the upgrade level
+            playerData.attributeLevels[upgradeType]++;
+
+            // Log the upgrade
+            Debug.Log("Upgraded " + upgradeType + " to Level " + playerData.attributeLevels[upgradeType]);
+
+            // Now apply the upgrade based on the new level
+            switch (upgradeType)
+            {
+                case UpgradeType.WeaponDamage:
+                    // Example: Increase weapon damage by 20% per level
+                    var damageModifier = currentLevel * 0.2f;
+                    weaponController.damageModifier += damageModifier;
+                    Debug.Log("Weapon Damage Modifier Increased by: " + damageModifier);
+                    break;
+
+                case UpgradeType.ProjectileSpeed:
+                    // Example: Increase projectile speed by 10% per level
+                    var speedModifier = currentLevel * 0.1f;
+                    weaponController.currentProjectileSpeedModifier += speedModifier;
+                    Debug.Log("Projectile Speed Modifier Increased by: " + speedModifier);
+                    break;
+
+                case UpgradeType.WeaponCooldown:
+                    // Example: Decrease weapon cooldown by 10% per level
+                    var cooldownModifier = currentLevel * 0.1f;
+                    weaponController.currentCooldownModifier -= cooldownModifier;
+                    Debug.Log("Weapon Cooldown Modifier Decreased by: " + cooldownModifier);
+                    break;
+
+                case UpgradeType.AoeEffect:
+                    // Example: Increase AOE effect by 20% per level
+                    var aoeModifier = currentLevel * 0.2f;
+                    weaponController.areaModifier += aoeModifier;
+                    Debug.Log("AOE Effect Modifier Increased by: " + aoeModifier);
                     break;
 
                 default:
@@ -380,16 +455,33 @@ namespace Controllers.Player_Controllers
             foreach (BaseWeaponController weaponPrefab in weaponPrefabsList)
             {
                 if (IsWeaponAlreadyAttached(weaponHolder, weaponPrefab)) continue;
-    
+
                 Vector3 localPosition = weaponPrefab.transform.localPosition;
                 Quaternion localRotation = weaponPrefab.transform.localRotation;
-    
+
                 GameObject newWeapon = Instantiate(weaponPrefab.gameObject, weaponHolder);
-    
+
                 newWeapon.transform.localPosition = localPosition;
                 newWeapon.transform.localRotation = localRotation;
-    
-                weaponControllers.Add(newWeapon.GetComponent<BaseWeaponController>());
+
+                var newWeaponController = newWeapon.GetComponent<BaseWeaponController>();
+
+                // Apply upgrades based on saved levels from PlayerPrefs
+                foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
+                {
+                    if (PlayerPrefs.HasKey(upgradeType.ToString()))
+                    {
+                        var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString());
+
+                        // Check if the saved level is greater than 0
+                        if (savedLevel > 0)
+                        {
+                            ApplyUpgradeAtStart(upgradeType, newWeaponController);
+                        }
+                    }
+                }
+
+                weaponControllers.Add(newWeaponController);
                 break;
             }
         }
@@ -402,10 +494,11 @@ namespace Controllers.Player_Controllers
         // ReSharper disable Unity.PerformanceAnalysis
         private void OnUpgradeChoiceSelected(UpgradeOption chosenUpgrade)
         {
-            ApplyUpgrade(chosenUpgrade);
+            // Assuming chosenUpgrade contains the UpgradeType and level, update accordingly
+            ApplyUpgrade(chosenUpgrade.type);
             ResumeGame();
             _isGamePaused = false;
-            
+    
             InGameUpgradeUI.Instance.HideUpgradePanel();
         }
         
@@ -524,11 +617,17 @@ namespace Controllers.Player_Controllers
             if (!(gameTime >= gameEndTime) || _hasEndedTheRun) return;
 
             var currentTotalGold = PlayerPrefs.GetInt("TotalGold", 0);
-            currentTotalGold += _playerGold - 1;
-            PlayerPrefs.SetInt("TotalGold", currentTotalGold);
-
-            Debug.Log("End of run. Added " + (_playerGold - 1) + " gold to totalGold. Total Gold: " + currentTotalGold);
-
+            if (_playerGold != 0)
+            {
+                currentTotalGold += _playerGold - 1;
+                PlayerPrefs.SetInt("TotalGold", currentTotalGold);
+            }
+            else
+            {
+                currentTotalGold += _playerGold;
+                PlayerPrefs.SetInt("TotalGold", currentTotalGold);
+            }
+            
             EnemySpawnManager.Instance.gameObject.SetActive(false);
             var enemyControllers = FindObjectsOfType<EnemyController>();
             foreach (EnemyController enemyController in enemyControllers)
@@ -550,11 +649,17 @@ namespace Controllers.Player_Controllers
         private void PlayerDie()
         {
             var currentTotalGold = PlayerPrefs.GetInt("TotalGold", 0);
-            currentTotalGold += _playerGold - 1;
-            PlayerPrefs.SetInt("TotalGold", currentTotalGold);
-
-            Debug.Log("Player died. Added " + (_playerGold - 1) + " gold to totalGold. Total Gold: " + currentTotalGold);
-
+            if (_playerGold != 0)
+            {
+                currentTotalGold += _playerGold - 1;
+                PlayerPrefs.SetInt("TotalGold", currentTotalGold);
+            }
+            else
+            {
+                currentTotalGold += _playerGold;
+                PlayerPrefs.SetInt("TotalGold", currentTotalGold);
+            }
+            
             EnemySpawnManager.Instance.gameObject.SetActive(false);
 
             if (_youDiedPanel != null)

@@ -5,10 +5,10 @@ namespace Containers
 {
     public class AnimationHelper2 : MonoBehaviour
     {
-        public TurretController turretController;
+        public AutoGunController autoGunController;
         public void StartFiring()
         {
-            turretController.StartFiring();
+            autoGunController.StartFiring();
         }
     }
 }

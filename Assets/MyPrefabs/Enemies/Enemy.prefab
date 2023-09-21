@@ -51,8 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49511caa7e697704a8580e9fe4b234cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDamageScalingTime: 30
-  maxDamageScaleValue: 1.2
+  maxDamageScalingTime: 300
+  maxDamageScaleValue: 2
   enemyData: {fileID: 11400000, guid: 49a39791e184fbd439186c40039b3948, type: 2}
   xpGemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
     type: 3}
@@ -60,7 +60,7 @@ MonoBehaviour:
     type: 3}
   healthPickupPrefab: {fileID: 3422041354093302617, guid: 34331d0aaa74a6545bc1f62670c61e97,
     type: 3}
-  healthDropChanceMultiplier: 0.5
+  healthDropChanceMultiplier: 0.25
   minSpawnOffsetX: -1
   maxSpawnOffsetX: 1
   minZOffset: -1

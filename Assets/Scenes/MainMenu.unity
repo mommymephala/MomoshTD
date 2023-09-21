@@ -3037,7 +3037,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchoredPosition: {x: 0, y: -150}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1028276175
@@ -7539,10 +7539,6 @@ MonoBehaviour:
   weaponCooldownCurrentValueText: {fileID: 1669419899}
   aoeEffectGoldCostText: {fileID: 2149824656307779943}
   aoeEffectCurrentValueText: {fileID: 432913547}
-  towerMaxHpGoldCostText: {fileID: 2149824656383802659}
-  towerMaxHpCurrentValueText: {fileID: 1250877523}
-  healthRegenAmountGoldCostText: {fileID: 2149824654370291432}
-  healthRegenAmountCurrentValueText: {fileID: 1047406385}
   weaponControllers:
   - {fileID: 2052227288582788245, guid: 98210b04a087b434aadc8d9227b8357c, type: 3}
   - {fileID: 1083259779153351029, guid: c88fb57993406b14c9f1c9d790d8e398, type: 3}

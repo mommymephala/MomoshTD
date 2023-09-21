@@ -77,13 +77,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 70df4aa72d0be824e9559d61e5db10b2, type: 2}
-  towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
   towerTransform: {fileID: 742433834843676120}
   muzzleTransform: {fileID: 1153342525410225630}
-  rotationSpeed: 5
-  currentCooldownModifier: 1
+  rotationSpeed: 1
+  currentCooldownModifier: 2
   currentProjectileSpeedModifier: 1
-  damageModifier: 1
+  damageModifier: 1.2
   areaModifier: 1
   bazookaAnimator: {fileID: 742433834843676103}
 --- !u!1001 &1153342525465536390

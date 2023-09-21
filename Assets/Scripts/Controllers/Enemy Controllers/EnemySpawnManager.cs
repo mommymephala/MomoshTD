@@ -31,7 +31,7 @@ namespace Controllers.Enemy_Controllers
         
         private float _nextSpawnTime;
         
-        private float _bossSpawnTime;
+        private float _bossSpawnTime = 60f; // Boss spawns every 60 seconds
         private float _bossSpawnTimer;
         private bool _hasSpawnedBoss;
 
@@ -58,14 +58,14 @@ namespace Controllers.Enemy_Controllers
         {
             if (_playerController == null) return;
 
+            _bossSpawnTimer += Time.deltaTime; // Increment the timer
+
             if (!_hasSpawnedBoss && _bossSpawnTimer >= _bossSpawnTime && _playerController.gameTime < _playerController.gameEndTime)
             {
                 SpawnBoss();
                 _hasSpawnedBoss = true;
-                _bossSpawnTimer = 0f;
+                _bossSpawnTimer = 0f; // Reset the timer
             }
-
-            _bossSpawnTimer += Time.deltaTime;
 
             if (!(_playerController.gameTime >= _nextSpawnTime)) return;
             var numEnemiesToSpawn = CalculateNumEnemiesToSpawn();
@@ -150,7 +150,6 @@ namespace Controllers.Enemy_Controllers
         private void ResetSpawnManager()
         {
             _nextSpawnTime = _playerController.gameTime + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
-            _bossSpawnTime = 60f;
             _hasSpawnedBoss = false;
         }
 

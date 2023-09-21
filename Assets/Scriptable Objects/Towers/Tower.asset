@@ -12,9 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5895c53905ac414199fae5a4d2d2b34, type: 3}
   m_Name: Tower
   m_EditorClassIdentifier: 
-  baseDmgModifier: 0.1
-  baseAoeRadiusModifier: 0.1
-  baseProjectileSpeedModifier: 0.1
-  baseCooldownModifier: 0.1
   maxHp: 1000
-  baseHpRegen: 0.25
+  baseHpRegen: 2

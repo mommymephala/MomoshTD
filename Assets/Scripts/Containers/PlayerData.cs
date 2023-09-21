@@ -1,22 +1,26 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Containers
 {
     [Serializable]
     public class PlayerData
     {
-        public Dictionary<UpgradeType, int> attributeLevels = new Dictionary<UpgradeType, int>();
+        public Dictionary<UpgradeType, int> attributeLevels;
 
         public int MaxPermanentLevel { get; private set; } = 5;
 
         public int MaxInGameLevel { get; private set; } = 10;
 
-        public PlayerData()
+        public void Initialize()
         {
+            attributeLevels = new Dictionary<UpgradeType, int>();
+            
             foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
             {
-                attributeLevels[upgradeType] = 0;
+                var savedLevel = PlayerPrefs.GetInt(upgradeType.ToString(), 0);
+                attributeLevels[upgradeType] = savedLevel;
             }
         }
 

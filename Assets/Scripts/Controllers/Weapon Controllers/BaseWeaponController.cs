@@ -6,8 +6,6 @@ namespace Controllers.Weapon_Controllers
     public class BaseWeaponController : MonoBehaviour
     {
         [SerializeField] public WeaponData weaponData;
-        [SerializeField] protected TowerData towerData;
-
         [SerializeField] protected Transform towerTransform;
         [SerializeField] protected Transform muzzleTransform;
         [SerializeField] protected float rotationSpeed;
@@ -28,8 +26,8 @@ namespace Controllers.Weapon_Controllers
 
         protected virtual void Start()
         {
-            CurrentCooldown = weaponData.baseCooldown + (weaponData.baseCooldown * towerData.baseCooldownModifier);
-            CurrentProjectileSpeed = weaponData.baseProjectileSpeed + (weaponData.baseProjectileSpeed * towerData.baseProjectileSpeedModifier);
+            CurrentCooldown = weaponData.baseCooldown;
+            CurrentProjectileSpeed = weaponData.baseProjectileSpeed;
         }
 
         protected virtual void Update()
@@ -52,19 +50,6 @@ namespace Controllers.Weapon_Controllers
 
             towerTransform.rotation = Quaternion.Slerp(towerTransform.rotation, Quaternion.Euler(0, targetRotation.eulerAngles.y, 0), Time.deltaTime * rotationSpeed);
         }
-        
-        /*protected void RotateWeaponTowardsEnemy()
-        {
-            if (TargetEnemy == null)
-                return;
-            
-            _weaponPosition = towerTransform.position;
-            _targetPosition = TargetEnemy.position;
-            MuzzleLocation = muzzleTransform.position;
-
-            Quaternion targetRotation = Quaternion.LookRotation(_targetPosition - _weaponPosition);
-            towerTransform.rotation = Quaternion.Slerp(towerTransform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-        }*/
         
         public void SetTargetEnemy(Transform enemyTransform)
         {

@@ -181,11 +181,12 @@ MonoBehaviour:
   - {fileID: 1083259779153351029, guid: c88fb57993406b14c9f1c9d790d8e398, type: 3}
   - {fileID: 2052227288582788245, guid: 98210b04a087b434aadc8d9227b8357c, type: 3}
   weaponHolder: {fileID: 4799639053628683179}
-  baseXpRequirement: 30
-  xpMultiplierForNextLv: 1.35
+  baseXpRequirement: 20
+  xpMultiplierForNextLv: 2
   collectionRadius: 5
   gameTime: 0
   gameEndTime: 300
+  _xpLevelThresholds: 
   currentHealth: 0
   maxCurrentHealth: 0
 --- !u!208 &348131350075880086

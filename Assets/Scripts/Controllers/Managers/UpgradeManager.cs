@@ -28,6 +28,12 @@ namespace Controllers.Managers
         
         public List<BaseWeaponController> weaponControllers;
 
+        private void Awake()
+        {
+            playerData = new PlayerData();
+            playerData.Initialize();
+        }
+
         private void Start()
         {
             foreach (UpgradeType upgradeType in Enum.GetValues(typeof(UpgradeType)))
@@ -47,27 +53,27 @@ namespace Controllers.Managers
             switch (upgradeType)
             {
                 case UpgradeType.WeaponDamage:
-                    weaponDamageGoldCostText.text = totalGoldCost.ToString();
+                    weaponDamageGoldCostText.text = (currentLevel < 5) ? totalGoldCost.ToString() : "MAX";
                     weaponDamageCurrentValueText.text = currentLevel.ToString();
                     break;
                 case UpgradeType.ProjectileSpeed:
-                    projectileSpeedGoldCostText.text = totalGoldCost.ToString();
+                    projectileSpeedGoldCostText.text = (currentLevel < 5) ? totalGoldCost.ToString() : "MAX";
                     projectileSpeedCurrentValueText.text = currentLevel.ToString();
                     break;
                 case UpgradeType.WeaponCooldown:
-                    weaponCooldownGoldCostText.text = totalGoldCost.ToString();
+                    weaponCooldownGoldCostText.text = (currentLevel < 5) ? totalGoldCost.ToString() : "MAX";
                     weaponCooldownCurrentValueText.text = currentLevel.ToString();
                     break;
                 case UpgradeType.AoeEffect:
-                    aoeEffectGoldCostText.text = totalGoldCost.ToString();
+                    aoeEffectGoldCostText.text = (currentLevel < 5) ? totalGoldCost.ToString() : "MAX";
                     aoeEffectCurrentValueText.text = currentLevel.ToString();
                     break;
                 // case UpgradeType.TowerMaxHp:
-                //     towerMaxHpGoldCostText.text = totalGoldCost.ToString();
+                //     towerMaxHpGoldCostText.text = (currentLevel < 5) ? totalGoldCost.ToString() : "MAX";
                 //     towerMaxHpCurrentValueText.text = currentLevel.ToString();
                 //     break;
                 // case UpgradeType.HealthRegenAmount:
-                //     healthRegenAmountGoldCostText.text = totalGoldCost.ToString();
+                //     healthRegenAmountGoldCostText.text = (currentLevel < 5) ? totalGoldCost.ToString() : "MAX";
                 //     healthRegenAmountCurrentValueText.text = currentLevel.ToString();
                 //     break;
             }
@@ -139,7 +145,7 @@ namespace Controllers.Managers
             switch (upgradeType)
             {
                 case UpgradeType.WeaponDamage:
-                    var damageModifier = (currentLevel + 1) * 0.2f;
+                    var damageModifier = 0.2f;
                     
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
@@ -150,7 +156,7 @@ namespace Controllers.Managers
                     break;
 
                 case UpgradeType.ProjectileSpeed:
-                    var projectileSpeedModifier = (currentLevel + 1) * 0.25f;
+                    var projectileSpeedModifier = 0.1f;
 
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
@@ -161,7 +167,7 @@ namespace Controllers.Managers
                     break;
 
                 case UpgradeType.WeaponCooldown:
-                    var cooldownModifier = (currentLevel + 1) * 0.1f;
+                    var cooldownModifier = 0.1f;
 
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {
@@ -172,7 +178,7 @@ namespace Controllers.Managers
                     break;
 
                 case UpgradeType.AoeEffect:
-                    var aoeModifier = (currentLevel + 1) * 0.2f;
+                    var aoeModifier = 0.2f;
 
                     foreach (BaseWeaponController weaponController in weaponControllers)
                     {

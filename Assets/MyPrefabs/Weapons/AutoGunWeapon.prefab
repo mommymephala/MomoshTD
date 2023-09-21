@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 927361615373724785}
   - component: {fileID: 1083259779153351029}
   m_Layer: 7
-  m_Name: TurretWeapon
+  m_Name: AutoGunWeapon
   m_TagString: TurretWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -46,12 +46,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 3b4265b13eae11745ae034e66d836d18, type: 2}
-  towerData: {fileID: 11400000, guid: 06f90cb330114384eac826fe45497c5a, type: 2}
   towerTransform: {fileID: 169926154571797212}
   muzzleTransform: {fileID: 1884827770286074057}
-  rotationSpeed: 5
-  currentCooldownModifier: 1
-  currentProjectileSpeedModifier: 1
+  rotationSpeed: 10
+  currentCooldownModifier: 1.5
+  currentProjectileSpeedModifier: 1.2
   damageModifier: 1
   areaModifier: 1
   autoGunAnimator: {fileID: 169926154571797187}
@@ -248,7 +247,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c5718ccdbd74e1ebcf387f3706b316a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  turretController: {fileID: 1083259779153351029}
+  autoGunController: {fileID: 1083259779153351029}
 --- !u!95 &169926154571797187 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 1762018173025169313, guid: 5811f4236f7f88b41b2a1da538566706,

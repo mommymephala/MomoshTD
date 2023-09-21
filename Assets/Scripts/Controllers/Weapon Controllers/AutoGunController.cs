@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Controllers.Weapon_Controllers
 {
-    public class TurretController : BaseWeaponController
+    public class AutoGunController : BaseWeaponController
     {
         [SerializeField] private Animator autoGunAnimator;
         private Vector3 _bulletDirection;

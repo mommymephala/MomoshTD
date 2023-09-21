@@ -8,7 +8,6 @@ namespace Controllers.Weapon_Controllers
     public class BombProjectile : MonoBehaviour
     {
         [SerializeField] private WeaponData weaponData;
-        [SerializeField] private TowerData towerData;
         [SerializeField] private BaseWeaponController weaponController;
         [SerializeField] private LayerMask enemyLayer;
         [SerializeField] private float explosionDuration = 0.5f;
@@ -20,8 +19,8 @@ namespace Controllers.Weapon_Controllers
 
         private void Start()
         {
-            _currentDamage = weaponData.baseDamage + (weaponData.baseDamage * towerData.baseDmgModifier);
-            _currentArea = weaponData.baseAoeRadius + (weaponData.baseAoeRadius * towerData.baseAoeRadiusModifier);
+            _currentDamage = weaponData.baseDamage;
+            _currentArea = weaponData.baseAoeRadius;
         }
 
         private void OnTriggerEnter(Collider other)

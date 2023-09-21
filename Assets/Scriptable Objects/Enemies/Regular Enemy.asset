@@ -16,13 +16,13 @@ MonoBehaviour:
     type: 3}
   enemyDeathVFX: {fileID: 119968, guid: e73000b12fb76244cbffd6abbf8bb6e4, type: 3}
   baseHealth: 100
-  baseDamage: 5
+  baseDamage: 3
   xpGemMinDropAmount: 1
   xpGemMaxDropAmount: 2
   goldMinDropAmount: 1
   goldMaxDropAmount: 1
   goldDropChance: 0.25
   healthDropChance: 0.1
-  moveSpeed: 2.5
+  moveSpeed: 4.5
   damageInterval: 1
   damageRadius: 1.5

@@ -31,7 +31,7 @@ Transform:
   m_GameObject: {fileID: 2761235822128240879}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 1.081, z: -4.18}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 2.5, y: 2.5, z: 2.5}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 7228751519959470954}
@@ -51,8 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49511caa7e697704a8580e9fe4b234cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxDamageScalingTime: 30
-  maxDamageScaleValue: 1.5
+  maxDamageScalingTime: 300
+  maxDamageScaleValue: 3
   enemyData: {fileID: 11400000, guid: 8b2eb3a503e2ea74dac4d8c933b284ee, type: 2}
   xpGemPrefab: {fileID: 3422041354093302617, guid: fceec322f14749a4fb13e846bd0dc374,
     type: 3}
@@ -60,7 +60,7 @@ MonoBehaviour:
     type: 3}
   healthPickupPrefab: {fileID: 3422041354093302617, guid: 34331d0aaa74a6545bc1f62670c61e97,
     type: 3}
-  healthDropChanceMultiplier: 0.5
+  healthDropChanceMultiplier: 0
   minSpawnOffsetX: -1
   maxSpawnOffsetX: 1
   minZOffset: -1
