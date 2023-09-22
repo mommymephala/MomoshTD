@@ -82,7 +82,7 @@ MonoBehaviour:
   rotationSpeed: 1
   currentCooldownModifier: 2
   currentProjectileSpeedModifier: 1
-  damageModifier: 1.2
+  damageModifier: 1
   areaModifier: 1
   bazookaAnimator: {fileID: 742433834843676103}
 --- !u!1001 &1153342525465536390
