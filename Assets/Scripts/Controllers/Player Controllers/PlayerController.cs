@@ -437,6 +437,63 @@ namespace Controllers.Player_Controllers
             }
         }
         
+        private void ApplyUpgradeForNewWeapon(UpgradeType upgradeType, BaseWeaponController weaponController)
+        {
+            // Retrieve the current level from player data
+            var currentLevel = playerData.attributeLevels[upgradeType];
+
+            // Determine the maximum level allowed for this upgrade
+            var maxLevel = playerData.MaxLevelForAttribute(upgradeType);
+
+            // Check if the current level is already at the maximum
+            if (currentLevel >= maxLevel)
+            {
+                Debug.Log(upgradeType + " is already at max level (" + currentLevel + ")");
+                return;
+            }
+
+            // Increment the upgrade level
+            //playerData.attributeLevels[upgradeType]++;
+
+            // Log the upgrade
+            Debug.Log("Upgraded " + upgradeType + " to Level " + playerData.attributeLevels[upgradeType]);
+
+            // Now apply the upgrade based on the new level
+            switch (upgradeType)
+            {
+                case UpgradeType.WeaponDamage:
+                    // Example: Increase weapon damage by 20% per level
+                    var damageModifier = currentLevel * 0.2f;
+                    weaponController.damageModifier += damageModifier;
+                    Debug.Log("Weapon Damage Modifier Increased by: " + damageModifier);
+                    break;
+
+                case UpgradeType.ProjectileSpeed:
+                    // Example: Increase projectile speed by 10% per level
+                    var speedModifier = currentLevel * 0.1f;
+                    weaponController.currentProjectileSpeedModifier += speedModifier;
+                    Debug.Log("Projectile Speed Modifier Increased by: " + speedModifier);
+                    break;
+
+                case UpgradeType.WeaponCooldown:
+                    // Example: Decrease weapon cooldown by 10% per level
+                    var cooldownModifier = currentLevel * 0.1f;
+                    weaponController.currentCooldownModifier -= cooldownModifier;
+                    Debug.Log("Weapon Cooldown Modifier Decreased by: " + cooldownModifier);
+                    break;
+
+                case UpgradeType.AoeEffect:
+                    // Example: Increase AOE effect by 20% per level
+                    var aoeModifier = currentLevel * 0.2f;
+                    weaponController.areaModifier += aoeModifier;
+                    Debug.Log("AOE Effect Modifier Increased by: " + aoeModifier);
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
         // ReSharper disable Unity.PerformanceAnalysis
         private bool CanAttachNewWeapon()
         {
@@ -476,7 +533,7 @@ namespace Controllers.Player_Controllers
                         // Check if the saved level is greater than 0
                         if (savedLevel > 0)
                         {
-                            ApplyUpgradeAtStart(upgradeType, newWeaponController);
+                            ApplyUpgradeForNewWeapon(upgradeType, newWeaponController);
                         }
                     }
                 }

@@ -31,9 +31,8 @@ namespace Controllers.Enemy_Controllers
         
         private float _nextSpawnTime;
         
-        private float _bossSpawnTime = 60f; // Boss spawns every 60 seconds
+        private float _bossSpawnPerSecond = 60f;
         private float _bossSpawnTimer;
-        private bool _hasSpawnedBoss;
 
         private void Awake()
         {
@@ -51,6 +50,7 @@ namespace Controllers.Enemy_Controllers
         {
             _playerController = FindObjectOfType<PlayerController>();
             _spawnPoint = transform;
+            //_bossSpawnPerSecond = 60f;
             ResetSpawnManager();
         }
 
@@ -58,13 +58,12 @@ namespace Controllers.Enemy_Controllers
         {
             if (_playerController == null) return;
 
-            _bossSpawnTimer += Time.deltaTime; // Increment the timer
+            _bossSpawnTimer += Time.deltaTime;
 
-            if (!_hasSpawnedBoss && _bossSpawnTimer >= _bossSpawnTime && _playerController.gameTime < _playerController.gameEndTime)
+            if (_bossSpawnTimer >= _bossSpawnPerSecond && _playerController.gameTime < _playerController.gameEndTime)
             {
                 SpawnBoss();
-                _hasSpawnedBoss = true;
-                _bossSpawnTimer = 0f; // Reset the timer
+                _bossSpawnTimer = 0f;
             }
 
             if (!(_playerController.gameTime >= _nextSpawnTime)) return;
@@ -150,14 +149,13 @@ namespace Controllers.Enemy_Controllers
         private void ResetSpawnManager()
         {
             _nextSpawnTime = _playerController.gameTime + Random.Range(spawnFrequencyMin, spawnFrequencyMax);
-            _hasSpawnedBoss = false;
         }
 
         private void OnDrawGizmos()
         {
             Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, spawnRadius);
-
+        
             if (towerLocation == null) return;
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(towerLocation.transform.position, minDistanceFromTower);

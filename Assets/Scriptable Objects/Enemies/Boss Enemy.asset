@@ -15,7 +15,7 @@ MonoBehaviour:
   enemyPrefab: {fileID: 2761235822128240879, guid: 819a8c0ca5f02414da6681edb792b047,
     type: 3}
   enemyDeathVFX: {fileID: 172590, guid: 93c383a7bb6b65547bc569e7d7f10507, type: 3}
-  baseHealth: 500
+  baseHealth: 400
   baseDamage: 7.5
   xpGemMinDropAmount: 2
   xpGemMaxDropAmount: 4

@@ -49,7 +49,7 @@ MonoBehaviour:
   towerTransform: {fileID: 169926154571797212}
   muzzleTransform: {fileID: 1884827770286074057}
   rotationSpeed: 10
-  currentCooldownModifier: 1
+  currentCooldownModifier: 1.2
   currentProjectileSpeedModifier: 1
   damageModifier: 1
   areaModifier: 1
